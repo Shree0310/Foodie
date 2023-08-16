@@ -19,6 +19,43 @@
  - Tree Shaking - remove unused code for you
  - Different Dev & Prod bundles
   
+  # Food Ordering App
+  /**
+ * Header
+ * - Logo
+ * - Nav Items 
+ * Body
+ * - Search
+ *  - Restaurant Container
+ * - Restaurant Card  
+ *  --Restaurant name
+ *  --Image
+ *  --star ratings
+ *  --ETA
+ *  --Cuisines
+ * Footer
+ * - Copyright
+ * - Links
+ * - Address
+ * - Contact
+ */
+
+ # Two types of export/import
+ - default export/import
+ export default component name;
+ import component from "path"
+
+ -named import/export
+  export const Component;
+  import {Component} from "path";
+
+  # React Hooks
+   (Normal JS Utility functions)
+   -useState() : used to generate powerful state variables in react
+   useState maintains the state of component
+   -useEffect()
+
+  
 
 
 

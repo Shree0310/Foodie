@@ -1,3 +1,88 @@
-#heading {
+.header {
     color:blueviolet; 
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid black;
+}
+
+.logo{
+    width: 100px;
+}
+
+.nav-items{
+    padding: 0px 20px;
+
+}
+
+.nav-items > ul {
+    display: flex;
+    list-style-type: none;
+    font-size: 25px;
+}
+
+.nav-items > ul >li {
+    margin: 10px;
+    padding: 10px;
+}
+
+.cart-logo{
+    width: 55px;
+}
+
+.search{
+    font-size: medium;
+    padding-top: 10px;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 30px;
+}
+
+.card{
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    width: 18%;
+    margin: 10px;
+   
+}
+
+.card:hover{
+    box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+    border: 0.5px solid black;
+    cursor: pointer;
+}
+
+.card-container{
+    padding: 2px 15px;
+}
+
+.restaurant-img{
+    width: 100%;
+}
+
+.star-image{
+    width: 30px;
+    display: flex;
+}
+
+.restaurant-container{
+    display: flex;
+    flex-wrap: wrap;
+    
+}
+
+.filter-btn{
+    margin: 10px;
+    cursor: pointer;
+}
+
+.shimmer-container{
+    padding: 2px 15px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.shimmer-card{
+    width: 18%;
+    margin: 10px;
+    height: 400px;
+    background-color: beige;
 }
