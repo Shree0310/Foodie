@@ -55,6 +55,10 @@
    useState maintains the state of component
    -useEffect()
 
+   # Two types of routing in Web 
+   -Server Side Routing: You make a network call and the html page is coming from the server 
+   -Client Side Routing: You don't make any network calls while going from one page to another (present in SPAs) 
+
   
 
 

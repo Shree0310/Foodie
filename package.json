@@ -4,7 +4,7 @@
   "description": "This is my first attempt at React",
   "scripts": {
     "start": "parcel index.html",
-    "build": "parcel build index.html",   
+    "build": "parcel build index.html",
     "test": "jest"
   },
   "repository": {
@@ -18,7 +18,8 @@
   "license": "ISC",
   "dependencies": {
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.15.0"
   },
   "browsersList": [
     "Last 2 version"

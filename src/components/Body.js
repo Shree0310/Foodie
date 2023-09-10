@@ -2,7 +2,9 @@ import RestaurantCard from "./RestaurantCard";
 import resArray from "../utils/mockData";
 import { useState, useEffect  } from "react";
 import Shimmer from "./Shimmer";
-
+import { Link } from "react-router-dom";
+import useOfflinePage from "../utils/useOfflinePage";
+import Offline from "./Offline";
 //Body Component
 //Passing a prop to a component is just like passing an argument to a function
 //Whenever we want to pass dynamic data we use props in react 
@@ -20,6 +22,8 @@ const Body = () =>{
     //Array destructuring 
     //Hooks are just normal js functions given by React that have specifice use cases
     const  [listOfRestaurants, setListOfRestaurant] = useState([]);
+    const [searchText, setSearchText] = useState("");
+    const [filteredRestaurants, setFilteredRestaurants] = useState([]);
 
     //It takes two arguments - 1. is a callback function, 2. dependency array
     //This useEffect callback function is called after the component renders 
@@ -42,39 +46,51 @@ const Body = () =>{
 
             //Optional chaining
             setListOfRestaurant(json?.data?.cards[2]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
+            setFilteredRestaurants(json?.data?.cards[2]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
     }
 
-    //normal js variable
-    // const listOfRestaurants = [];
- 
-    // let listOfRestaurants = [
-          
-    // ];
+    const offlineStatus = useOfflinePage();
 
-    //Conditional Rendering
-    if(listOfRestaurants.length === 0){
-         return (<h1>
-            <Shimmer/>
-         </h1>);
-    }
+   if(offlineStatus){
+     return <Offline/>
+   } 
 
+    //whenever state variable updates, react triggers a reconciliation cycle(re-renders the component )
     console.log("Body Rendered")
-    return (
+    //Using ternary operation
+    return (listOfRestaurants === null ? <Shimmer/> :(
         <div className="body">
-            {/* <div className="search">
-                Search
-                <input value="Search for restaurants and food" size="50" type="text"/>
-
-            </div> */}
             <div>
                 <div className="filter ">
-                    <button 
+                    <div className="search">
+                        <input
+                        //Binding to a local state variable searchText, but that forever remains empty string as initialised  
+                        //Local state variable changes everytime we are typing anything
+                        //And everytime the local state variable changes the component is re-rendered
+                        value={searchText} 
+                        size="50" type="text" 
+                        //As soon as my input changes I want to update it with the updated value
+                        onChange={(e)=>{setSearchText(e.target.value)}}/>
+                        <button 
+                        className="search-btn"
+                        onClick={()=>{
+                            //Filter the restaurant cards and update the UI
+                            // const filteredSearchText = searchText.fetch 
+                            //setSearchText(value); 
+                            const searchFilterList = filteredRestaurants.filter(
+                                (res) => res.info.name.toLowerCase().includes(searchText.toLowerCase())
+                            ); 
+                            setListOfRestaurant(searchFilterList);
+                            console.log(searchText);
+                        }}>Search</button>
+                    </div>
+                <button 
                     className="filter-btn" 
                     onClick={
                         ()=>{
                             console.log("button clicked")
                             //filter logic
-                            const filteredList = listOfRestaurants.filter(
+                            const filteredList = filteredRestaurants.filter(
                                 (res) => res.info.avgRating>4
                              );
                              setListOfRestaurant(filteredList); 
@@ -82,7 +98,7 @@ const Body = () =>{
                             }
                         }>
                         Top Rated Restaurants
-                    </button>
+                 </button>
 
                 </div>
             </div>
@@ -92,19 +108,18 @@ const Body = () =>{
                     // Whenever we are looping, we need to have a key property that is unique to each
                     //Here the key is the ID which is unique for each restaurant
                     //Or we can use an index as the key but index as key is not recommended 
-                    listOfRestaurants.map((restaurant,index) =>
+                    listOfRestaurants.map((restaurant) =>
                         (
-                        <RestaurantCard 
-                        key = {index}
-                        // Or
-                        // key = {restaurant.info.id}
-                        resData = {restaurant }/>
+                        <Link className="restaurant-link" key = {restaurant.info.id} to={"/restaurants/" + restaurant.info.id}> 
+                            <RestaurantCard 
+                            resData = {restaurant }/>
+                        </Link>
                          ))
                 } 
             </div>
 
         </div>
-    )
+    ))
 }
 
 
