@@ -1,6 +1,7 @@
 import User from "./User";
 import UserClass from "./UserClass";
 import React from "react";
+import userContext from "../utils/userContext";
 
 //When we render the About Us component on the web page then it starts goinig line by line
 class About extends React.Component {
@@ -21,6 +22,12 @@ class About extends React.Component {
         return (
             <div>
                 <h1>About Class Component</h1>
+                <div>
+                    Logged User
+                    <userContext.Consumer>
+                        {(data)=> console.log(data)}
+                    </userContext.Consumer>
+                </div>
                 {/* <User name = {"Sourashree through props"}/> */}
                 {/* When it comes accross this class based component an instance of this is created */}
                 <UserClass name ={"Sourashree from Class based"} location={"Bangalore on class"} contact={"sourahsree03@gmail.com"}/>

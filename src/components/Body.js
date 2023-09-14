@@ -1,10 +1,13 @@
 import RestaurantCard from "./RestaurantCard";
 import resArray from "../utils/mockData";
-import { useState, useEffect  } from "react";
+import { useState, useEffect, useContext  } from "react";
 import Shimmer from "./Shimmer";
 import { Link } from "react-router-dom";
 import useOfflinePage from "../utils/useOfflinePage";
 import Offline from "./Offline";
+import { withOfferLabel } from "./RestaurantCard";
+import userContext from "../utils/userContext";
+
 //Body Component
 //Passing a prop to a component is just like passing an argument to a function
 //Whenever we want to pass dynamic data we use props in react 
@@ -24,6 +27,12 @@ const Body = () =>{
     const  [listOfRestaurants, setListOfRestaurant] = useState([]);
     const [searchText, setSearchText] = useState("");
     const [filteredRestaurants, setFilteredRestaurants] = useState([]);
+
+    const RestaurantWithOffer = withOfferLabel(RestaurantCard);
+
+    const {setUserInfo,loggedInUser} = useContext(userContext);
+
+    //console.log(listOfRestaurants);
 
     //It takes two arguments - 1. is a callback function, 2. dependency array
     //This useEffect callback function is called after the component renders 
@@ -47,6 +56,7 @@ const Body = () =>{
             //Optional chaining
             setListOfRestaurant(json?.data?.cards[2]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
             setFilteredRestaurants(json?.data?.cards[2]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
+            
     }
 
     const offlineStatus = useOfflinePage();
@@ -56,14 +66,14 @@ const Body = () =>{
    } 
 
     //whenever state variable updates, react triggers a reconciliation cycle(re-renders the component )
-    console.log("Body Rendered")
+    
     //Using ternary operation
     return (listOfRestaurants === null ? <Shimmer/> :(
         <div className="body">
             <div>
-                <div className="filter ">
-                    <div className="search">
-                        <input
+                <div className="filter flex">
+                    <div className="search m-4 p-4">
+                        <input className="border border-solid border-black"
                         //Binding to a local state variable searchText, but that forever remains empty string as initialised  
                         //Local state variable changes everytime we are typing anything
                         //And everytime the local state variable changes the component is re-rendered
@@ -72,7 +82,7 @@ const Body = () =>{
                         //As soon as my input changes I want to update it with the updated value
                         onChange={(e)=>{setSearchText(e.target.value)}}/>
                         <button 
-                        className="search-btn"
+                        className="px-4 m-2 py-2 bg-orange-300 shadow-xl rounded-lg"
                         onClick={()=>{
                             //Filter the restaurant cards and update the UI
                             // const filteredSearchText = searchText.fetch 
@@ -84,8 +94,9 @@ const Body = () =>{
                             console.log(searchText);
                         }}>Search</button>
                     </div>
+                <div className="search m-4 px-4 py-4">
                 <button 
-                    className="filter-btn" 
+                    className=" bg-orange-300 shadow-xl m-2 px-4 py-2 rounded-lg" 
                     onClick={
                         ()=>{
                             console.log("button clicked")
@@ -99,10 +110,15 @@ const Body = () =>{
                         }>
                         Top Rated Restaurants
                  </button>
+                </div>
+                <div className="search m-4 px-4 py-4">
+                    <label>User Name:</label>
+                    <input className="border border-black p-2" value={loggedInUser}onChange={(e)=>setUserInfo(e.target.value )}/> 
+                </div>
 
                 </div>
             </div>
-            <div className="restaurant-container">
+            <div className="flex flex-wrap">
                 {/* restaurantCards */} 
                 {
                     // Whenever we are looping, we need to have a key property that is unique to each
@@ -111,8 +127,11 @@ const Body = () =>{
                     listOfRestaurants.map((restaurant) =>
                         (
                         <Link className="restaurant-link" key = {restaurant.info.id} to={"/restaurants/" + restaurant.info.id}> 
-                            <RestaurantCard 
-                            resData = {restaurant }/>
+                        {/* if the restaurant has the aggregatedDiscountInfoV3 add a label to it */}
+                            {restaurant.info.aggregatedDiscountInfoV3 ? 
+                            (<RestaurantWithOffer resData= {restaurant }/>)
+                             : (<RestaurantCard resData = {restaurant }/>
+                             )}
                         </Link>
                          ))
                 } 

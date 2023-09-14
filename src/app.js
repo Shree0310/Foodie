@@ -1,4 +1,4 @@
-import React, {lazy, Suspense} from "react";
+import React, {lazy, Suspense, useEffect, useState} from "react";
 import ReactDOM from "react-dom/client";
 import Header from "./components/Header";
 import Body from "./components/Body";
@@ -7,6 +7,7 @@ import { createBrowserRouter, RouterProvider,Outlet  } from "react-router-dom";
 import Contact from "./components/Contact";
 import Error from "./components/Error";
 import RestaurantMenu from "./components/RestaurantMenu";
+import userContext  from "./utils/userContext";
 //import Grocery from "./components/Grocery";
 
 //All the files should have only 100 lines of code not more than that
@@ -26,13 +27,28 @@ const About = lazy(()=>import("./components/About"));
 //App Layout component
 //App Layout is the root level component 
 const AppLayout = ()=>{
+
+    const [userInfo, setUserInfo] =  useState();
+
+    //authentication
+    useEffect(()=>{
+      const data ={
+        name: "Sourashree Banerjee"
+      };
+      setUserInfo(data.name);
+    },[])
+
      return (
       // Pushing the children according to the route
       //Whatever component is required this outlet is replaced by the component
-        <div className="app">
+      <div className="app">
+      <userContext.Provider value={{loggedInUser : userInfo, setUserInfo}}>       
              <Header/>
-             <Outlet/>
+             </userContext.Provider>
+        <Outlet/> 
         </div>
+     
+       
      )
 }
 
