@@ -59,6 +59,16 @@
    -Server Side Routing: You make a network call and the html page is coming from the server 
    -Client Side Routing: You don't make any network calls while going from one page to another (present in SPAs) 
 
+   # Redux Toolkit
+   - Install @reduxjs/toolkit and react redux
+   - npm install @reduxjs/toolkit
+   -  npm i react-redux 
+   - Build our store
+   - Connect store to the app
+   - Create a cart slice
+   Dispatch an action on add button click
+   Read data using Selector
+
   
 
 

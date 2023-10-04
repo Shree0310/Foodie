@@ -8,6 +8,9 @@ import Contact from "./components/Contact";
 import Error from "./components/Error";
 import RestaurantMenu from "./components/RestaurantMenu";
 import userContext  from "./utils/userContext";
+import { Provider } from "react-redux";
+import appStore from "./utils/appStore";
+import Cart from "./components/Cart";
 //import Grocery from "./components/Grocery";
 
 //All the files should have only 100 lines of code not more than that
@@ -33,7 +36,7 @@ const AppLayout = ()=>{
     //authentication
     useEffect(()=>{
       const data ={
-        name: "Sourashree Banerjee"
+        name: ""
       };
       setUserInfo(data.name);
     },[])
@@ -41,14 +44,14 @@ const AppLayout = ()=>{
      return (
       // Pushing the children according to the route
       //Whatever component is required this outlet is replaced by the component
-      <div className="app">
-      <userContext.Provider value={{loggedInUser : userInfo, setUserInfo}}>       
-             <Header/>
-             </userContext.Provider>
-        <Outlet/> 
-        </div>
-     
-       
+      <Provider store={appStore}>
+        <userContext.Provider value={{loggedInUser : userInfo, setUserInfo}}>   
+          <div className="app">    
+            <Header/>         
+            <Outlet/> 
+          </div>
+        </userContext.Provider>
+      </Provider>      
      )
 }
 
@@ -77,6 +80,10 @@ const appRouter = createBrowserRouter([
         element:  <Suspense fallback={<h1>Loading...</h1>}>
           <Grocery/>
         </Suspense>
+      },
+      {
+        path: "/cart",
+        element: <Cart/>
       },
       {
         //":" signifies that the resId will be dynamic i.e different for different restaurants 

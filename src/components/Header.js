@@ -1,9 +1,10 @@
 import { useContext, useEffect } from "react";
-import { LOGO_URL } from "../utils/constants";
+import { CART_URL, LOGO_URL } from "../utils/constants";
 import { useState } from "react";
 import { Link  } from "react-router-dom";
 import useOfflinePage from "../utils/useOfflinePage";
 import userContext from "../utils/userContext";
+import { useSelector } from "react-redux";
 
 //All the react code is kept inside the src folder
 //It is a JS object
@@ -35,6 +36,10 @@ const Header = () =>{
     },[btnName2]);
 
     const offlineStatus = useOfflinePage();
+
+    //Subscribing to the store using a selector
+    const cartItems = useSelector((store)=> store.cart.items);
+    console.log(cartItems);
 
 
     return (
@@ -70,19 +75,30 @@ const Header = () =>{
                             Grocery Store
                         </Link>
                     </li>
-                    {/* <li className="w-40">
-                        <img 
-                        className="cart-logo"
-                        src="https://i.pinimg.com/originals/df/70/fc/df70fc7f957c5811ff783ad0efdd4966.jpg" />
-                    </li> */}
-                    <button 
-                    className="login"
-                    onClick={()=>{
-                                btnName2 === "Login" 
-                                ? setBtnName("Logout") 
-                                 : setBtnName("Login");
-                            }}>{btnName2 }
-                            </button>
+                    <li className="font-sans block mt-4 lg:inline-block lg:mt-0 align-middle text-black hover:text-gray-700">
+                        <Link to="/cart" className="relative flex py-1" viewbox="0 0 24 24">
+                            <img className="flex-1 w-6 h-6 fill-current"
+                                src={CART_URL}/>    
+                            <div  className="px-1">
+                                <span className="absolute right-0 top-0 rounded-full bg-red-600 w-4 
+                                                h-4 top right p-0 m-0 text-white font-mono text-sm  leading-tight text-center">
+                                {cartItems.length}
+                                </span>
+                                
+                            </div>                   
+                        </Link>
+                    </li>
+                    <li className="px-4">
+                        <button 
+                        className="login"
+                        onClick={()=>{
+                                    btnName2 === "Login" 
+                                    ? setBtnName("Logout") 
+                                    : setBtnName("Login");
+                                }}>{btnName2 }
+                        </button>
+                    </li>
+                    
                     <li className="px-4 font-bold">{loggedInUser} </li>        
                 </ul>
         </div>
