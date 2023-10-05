@@ -79,6 +79,7 @@ const Body = () =>{
                         //And everytime the local state variable changes the component is re-rendered
                         value={searchText} 
                         size="50" type="text" 
+                        data-testid = "searchInput"
                         //As soon as my input changes I want to update it with the updated value
                         onChange={(e)=>{setSearchText(e.target.value)}}/>
                         <button 

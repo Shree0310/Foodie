@@ -16,7 +16,9 @@ const ItemList = (itemsData)=>{
         <div>
           {Object.keys(itemsData).map((key) =>
             itemsData[key].map((x) => (
-              <div key={x.card.info.id} className="p-2 m-2 border-b-2 text-left flex justify-between">
+              <div 
+              data-testid="foodItems"
+              key={x.card.info.id} className="p-2 m-2 border-b-2 text-left flex justify-between">
            <div className="w-9/12">
             <div className="py-2">
               <span>{x.card.info.name}</span>

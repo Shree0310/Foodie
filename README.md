@@ -69,6 +69,29 @@
    Dispatch an action on add button click
    Read data using Selector
 
+   # Different types of testing (developer)
+   - Unit Testing : testing react omponents in isolation
+   - Integration testing: testing the flow of actions, multiple components that are talking to each other for a functionality
+   - End to End testing(e2e tseting): Testing from when the user lands on the page till when the user leaves the pages, testing different flows
+
+   # Testing libraries for React
+   - React testing library
+
+   # Setting up testing in our app
+   - Install React Testing Library
+   - Installed Jest
+   - Installed Babel dependencies
+   - Configure Babel
+   - Configure Parcel Config file to disable default babel transpilation
+   - Jest configuration - npx jest --init
+   - install JSDOM library
+   - install @babel/preset-react to make jsx work in test cases
+   - include babel preset inside the babel config
+   - install @testing-library/jest-dom 
+   - add  "watch-test": "jest --watch" to package.json
+
+
+
   
 
 

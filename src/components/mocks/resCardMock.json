@@ -1,0 +1,75 @@
+{
+    "info": {
+        "id": "113317",
+        "name": "Bakingo",
+        "cloudinaryImageId": "rvkifj9uphlmvtuokhom",
+        "locality": "AECS Layout",
+        "areaName": "Marathahalli",
+        "costForTwo": "₹300 for two",
+        "cuisines": [
+            "Bakery",
+            "Desserts",
+            "Beverages",
+            "Snacks"
+        ],
+        "avgRating": 4.2,
+        "feeDetails": {
+            "restaurantId": "113317",
+            "fees": [
+                {
+                    "name": "BASE_DISTANCE",
+                    "fee": 6800
+                },
+                {
+                    "name": "BASE_TIME"
+                },
+                {
+                    "name": "ANCILLARY_SURGE_FEE"
+                }
+            ],
+            "totalFee": 6800
+        },
+        "parentId": "3818",
+        "avgRatingString": "4.2",
+        "totalRatingsString": "5K+",
+        "sla": {
+            "deliveryTime": 36,
+            "lastMileTravel": 6.7,
+            "serviceability": "SERVICEABLE",
+            "slaString": "36 mins",
+            "lastMileTravelString": "6.7 km",
+            "iconType": "ICON_TYPE_EMPTY"
+        },
+        "availability": {
+            "nextCloseTime": "2023-10-06 01:00:00",
+            "opened": true
+        },
+        "badges": {},
+        "isOpen": true,
+        "aggregatedDiscountInfoV2": {},
+        "type": "F",
+        "badgesV2": {
+            "entityBadges": {
+                "imageBased": {},
+                "textBased": {},
+                "textExtendedBadges": {}
+            }
+        },
+        "differentiatedUi": {
+            "displayType": "ADS_UI_DISPLAY_TYPE_ENUM_DEFAULT",
+            "differentiatedUiMediaDetails": {
+                "mediaType": "ADS_MEDIA_ENUM_IMAGE",
+                "lottie": {},
+                "video": {}
+            }
+        },
+        "reviewsSummary": {},
+        "displayType": "RESTAURANT_DISPLAY_TYPE_DEFAULT",
+        "restaurantOfferPresentationInfo": {}
+    },
+    "analytics": {},
+    "cta": {
+        "link": "https://www.swiggy.com/restaurants/bakingo-aecs-layout-marathahalli-bangalore-113317",
+        "type": "WEBLINK"
+    }
+}

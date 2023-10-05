@@ -4,12 +4,13 @@ import { Link } from "react-router-dom";
 //Whenever we need something that we need to reuse then create a new component for it
 const RestaurantCard = (props) =>{
     const {resData} = props;
-    //console.log(resData);
+    
     const {cloudinaryImageId, name, locality, cuisines, avgRating, id} = resData?.info
     //console.log({resData});
+    //console.log(resData);
     return (
         // Another way of writing inline CSS
-        <div className="flex m-4 p-4 w-80 h-[370px] transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 hover:bg-orange-200 shadow-xl rounded-xl">
+        <div data-testid="resCard" className="flex m-4 p-4 w-80 h-[370px] transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 hover:bg-orange-200 shadow-xl rounded-xl">
            
                 <div className="container">
                             <img className="flex justify-center rounded-xl w-80 h-60 " src={CDN_URL + cloudinaryImageId}
