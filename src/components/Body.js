@@ -119,7 +119,7 @@ const Body = () =>{
 
                 </div>
             </div>
-            <div className="flex flex-wrap">
+            <div className="flex flex-wrap justify-center">
                 {/* restaurantCards */} 
                 {
                     // Whenever we are looping, we need to have a key property that is unique to each
