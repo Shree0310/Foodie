@@ -90,6 +90,8 @@
    - install @testing-library/jest-dom 
    - add  "watch-test": "jest --watch" to package.json
 
+   ```echo "foodie.sourashreeart.com" > ../docs/CNAME```
+
 
 
   
