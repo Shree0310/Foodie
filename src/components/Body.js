@@ -46,7 +46,7 @@ const Body = () =>{
 
     const fetchData = async () =>{
         //We get fetch from Browser
-        const url = "https://raw.githubusercontent.com/Shree0310/NamasteReact/main/src/SwiggyData.json"
+        const url = "https://swiggy.adiagr.in/dapi/restaurants/list/v5?lat=12.9650186&lng=77.7595472&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING"
          const data = await fetch(url);
 
             const json = await data.json(); 

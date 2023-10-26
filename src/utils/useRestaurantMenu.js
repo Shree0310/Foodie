@@ -12,7 +12,7 @@ const [resInfo, setResInfo] = useState(null);
     }, []);
 
     const fetchData = async ()=>{
-        const url = 'https://corsproxy.io/?' + encodeURIComponent(MENU_API); 
+        const url = "https://swiggy.adiagr.in/dapi/menu/pl?page-type=REGULAR_MENU&complete-menu=true&lat=22.060931&lng=82.177474&restaurantId="; 
         const data = await fetch(url + resId + "&catalog_qa=undefined&submitAction=ENTER");
         let jsonData = await data.json();
         // console.log(jsonData);    
