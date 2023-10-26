@@ -3,8 +3,8 @@ import UserClass from "./UserClass";
 
 const About = ()=>{
     return (
-        <div>
-            <h1 className="font-bold text-3xl p-4 m-4">Contact Us</h1>
+        <div className="flex justify-center">
+            {/* <h1 className="font-bold text-3xl p-4 m-4">About Us</h1> */}
             <UserClass/>
         </div>
     )

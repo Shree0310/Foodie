@@ -52,12 +52,13 @@ class UserClass extends React.Component{
        // console.log(this.props.name+ "Child render is called");
         //returns some JSX
         return ( <div className="user-card">
-        <button onClick={()=>{
+        {/* <button onClick={()=>{
             //NEVER UPDATE STATE VARIABLES DIRECTLY
              this.setState({
                 count: this.state.count +1
              })
-        }}>Increase count</button>
+        }}>Increase count</button> */}
+         <h1 className="font-bold text-3xl p-4 m-4">About Us</h1>
         <img  src={avatar_url}></img>
         <h2>Name: {name}</h2>
         <h3>Location: {location} </h3>

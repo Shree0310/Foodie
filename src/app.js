@@ -51,7 +51,8 @@ const AppLayout = ()=>{
             <Outlet/> 
           </div>
         </userContext.Provider>
-      </Provider>      
+      </Provider> 
+           
      )
 }
 

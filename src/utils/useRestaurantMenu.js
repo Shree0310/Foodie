@@ -12,8 +12,8 @@ const [resInfo, setResInfo] = useState(null);
     }, []);
 
     const fetchData = async ()=>{
-        const data = await fetch(MENU_API
-            + resId + "&catalog_qa=undefined&submitAction=ENTER");
+        const url = 'https://corsproxy.io/?' + encodeURIComponent(MENU_API); 
+        const data = await fetch(url + resId + "&catalog_qa=undefined&submitAction=ENTER");
         let jsonData = await data.json();
         // console.log(jsonData);    
         setResInfo(jsonData); 

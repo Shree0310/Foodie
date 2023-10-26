@@ -7,6 +7,7 @@ import useOfflinePage from "../utils/useOfflinePage";
 import Offline from "./Offline";
 import { withOfferLabel } from "./RestaurantCard";
 import userContext from "../utils/userContext";
+import Footer from "./Footer";
 
 //Body Component
 //Passing a prop to a component is just like passing an argument to a function
@@ -45,9 +46,8 @@ const Body = () =>{
 
     const fetchData = async () =>{
         //We get fetch from Browser
-         const data = await fetch(
-            "https://www.swiggy.com/dapi/restaurants/list/v5?lat=12.9650186&lng=77.7595472&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING"
-            );
+        const url = 'https://corsproxy.io/?' + encodeURIComponent('https://www.swiggy.com/dapi/restaurants/list/v5?lat=12.9650186&lng=77.7595472&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING')
+         const data = await fetch(url);
 
             const json = await data.json(); 
             //console.log(json?.data?.cards[2]?.card?.card?.gridElements?.infoWithStyle?.restaurants); 
@@ -136,6 +136,9 @@ const Body = () =>{
                         </Link>
                          ))
                 } 
+            </div>
+            <div>
+                <Footer/>
             </div>
 
         </div>
