@@ -1,0 +1,2 @@
+var e=("undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:"undefined"!=typeof window?window:"undefined"!=typeof global?global:{}).parcelRequire164e;e.register("h0EEC",function(l,f){Object.defineProperty(l.exports,"__esModule",{value:!0,configurable:!0}),Object.defineProperty(l.exports,"default",{get:()=>o,set:void 0,enumerable:!0,configurable:!0});var i=e("ayMG0"),n=e("j6ssx"),o=()=>(0,i.jsx)("div",{className:"flex justify-center",children:(0,i.jsx)(n.default,{})})});
+//# sourceMappingURL=About.198185a8.js.map
