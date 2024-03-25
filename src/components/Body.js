@@ -56,11 +56,7 @@ const Body = () =>{
             //   console.log(json); 
 
             //Optional chaining
-            //setListOfRestaurant(json?.data?.cards[5]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
-            //setFilteredRestaurants( json?.data?.cards[5]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
-            //console.log("Here: "+ json?.data?.cards[5]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
-            //console.log("Here2: "+ json?.data?.cards[1]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
-
+           
             for (const cardObj of arrayOfCards) {
                 if (cardObj?.card?.card && cardObj?.card?.card?.id === restaurantListing) {
                   const resData =
