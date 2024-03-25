@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const RestaurantCard = (props) =>{
     const {resData} = props;
     
-    const {cloudinaryImageId, name, locality, cuisines, avgRating, id} = resData?.info
+    const {cloudinaryImageId, name, locality, cuisines, avgRating, id} = resData;
     //console.log({resData});
     //console.log(resData);
     return (

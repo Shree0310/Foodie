@@ -49,14 +49,27 @@ const Body = () =>{
         const url = "https://swiggy.adiagr.in/dapi/restaurants/list/v5?lat=12.9650186&lng=77.7595472&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING"
          const data = await fetch(url);
 
-            const json = await data.json(); 
+            const json = await data.json();
+            const arrayOfCards = json?.data?.cards;
+            const restaurantListing = "restaurant_grid_listing"; 
             //console.log(json?.data?.cards[2]?.card?.card?.gridElements?.infoWithStyle?.restaurants); 
             //   console.log(json); 
 
             //Optional chaining
-            setListOfRestaurant(json?.data?.cards[2]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
-            setFilteredRestaurants(json?.data?.cards[2]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
-            
+            //setListOfRestaurant(json?.data?.cards[5]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
+            //setFilteredRestaurants( json?.data?.cards[5]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
+            //console.log("Here: "+ json?.data?.cards[5]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
+            //console.log("Here2: "+ json?.data?.cards[1]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
+
+            for (const cardObj of arrayOfCards) {
+                if (cardObj?.card?.card && cardObj?.card?.card?.id === restaurantListing) {
+                  const resData =
+                  cardObj.card?.card?.gridElements?.infoWithStyle?.restaurants;
+                  setListOfRestaurant(resData);
+                  setFilteredRestaurants(resData);
+                }
+              }
+
     }
 
     const offlineStatus = useOfflinePage();
@@ -127,11 +140,11 @@ const Body = () =>{
                     //Or we can use an index as the key but index as key is not recommended 
                     listOfRestaurants.map((restaurant) =>
                         (
-                        <Link className="restaurant-link" key = {restaurant.info.id} to={"/restaurants/" + restaurant.info.id}> 
+                        <Link className="restaurant-link" key = {restaurant?.info.id} to={"/restaurants/" + restaurant?.info.id}> 
                         {/* if the restaurant has the aggregatedDiscountInfoV3 add a label to it */}
                             {restaurant.info.aggregatedDiscountInfoV3 ? 
-                            (<RestaurantWithOffer resData= {restaurant }/>)
-                             : (<RestaurantCard resData = {restaurant }/>
+                            (<RestaurantWithOffer resData= {restaurant?.info }/>)
+                             : (<RestaurantCard resData = {restaurant?.info }/>
                              )}
                         </Link>
                          ))
