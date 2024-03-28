@@ -21,13 +21,24 @@ const RestaurantMenu = ()=>{
         return <Shimmer/>
     }
 
-    const {name, cuisines, costForTwoMessage, avgRating, locality  } = resInfo?.data?.cards[0]?.card?.card?.info;
-    const {itemCards}  = resInfo?.data?.cards[2]?.groupedCard?.cardGroupMap?.REGULAR?.cards[1]?.card?.card;
+    const resBasicInfo = resInfo?.data?.cards.filter(
+        (c)=> c?.card?.card?.["@type"] === "type.googleapis.com/swiggy.presentation.food.v2.Restaurant"
+    )[0].card.card.info;
+
+    const categoryCards = resInfo?.data?.cards.filter((c) => c.groupedCard);
+
+
+    const {name, cuisines, costForTwoMessage, avgRating, locality  } = resBasicInfo;
+    //const {itemCards}  = resInfo?.data?.cards[2]?.groupedCard?.cardGroupMap?.REGULAR?.cards[1]?.card?.card;
     //itemCards[0].card.info;
 
     //console.log(resInfo?.data?.cards[2]?.groupedCard?.cardGroupMap?.REGULAR?.cards);
 
-    const categories = resInfo?.data?.cards[2]?.groupedCard?.cardGroupMap?.REGULAR?.cards.filter(item=>item.card?.["card"]?.["@type"]=="type.googleapis.com/swiggy.presentation.food.v2.ItemCategory");
+    const categories = categoryCards[0]?.groupedCard?.cardGroupMap?.REGULAR?.cards.filter(
+        (c) =>
+          c.card?.card?.["@type"] ===
+          "type.googleapis.com/swiggy.presentation.food.v2.ItemCategory"
+      );
     //console.log(categories);
     return (
         <div className="menu">
@@ -47,8 +58,8 @@ const RestaurantMenu = ()=>{
                 {categories.map((category,index)=>(
                  //Controlled Component   
                 <RestaurantCategory 
-                key = {category.card.card.title } 
-                catData= {category.card.card}
+                key = {category?.card?.card?.title } 
+                catData= {category?.card?.card}
                 showItems = {index === showIndex ? true: false}
                 closeItem = {showIndex ? false: true}
                 setShowIndex = {() => setShowIndex(index)}
