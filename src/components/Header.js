@@ -44,17 +44,25 @@ const Header = () =>{
 
     return (
         //If we want to write any javascript in JSX then we write it in {}
-        <div className="flex justify-between bg-orange-100 shadow-xl mb-2" >
-            <div className="w-24">
-                <img 
-                src=   {LOGO_URL}  />
-            </div>
+        <div className="flex items-center justify-between bg-orange-100 shadow-xl mb-2 px-4" >
             <div className="flex items-center">
-                <ul className="flex p-4 m-4">
+                <div className="w-24">
+                    <img 
+                    src=   {LOGO_URL}  />
+                </div>
+                <Link to="/location">
+                    Current Location
+                </Link>
+            </div>
+            
+
+            <div className="flex items-between">
+                <ul className="flex  p-4 m-4">
                 <li className="px-4 py-1">
                     { offlineStatus ?  <div class="h-4 w-4 rounded-full bg-red-500"></div> :<div className="h-4 w-4 rounded-full bg-green-600"> </div> }
                     </li>
                     {/* <div class="w-24 h-24 bg-red-500 rounded-full"></div> */}
+           
                     <li className="px-4">
                         <Link to="/">
                             Home

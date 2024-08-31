@@ -11,6 +11,8 @@ import userContext  from "./utils/userContext";
 import { Provider } from "react-redux";
 import appStore from "./utils/appStore";
 import Cart from "./components/Cart";
+import Location from "./components/Location";
+import LocationNew from "./components/LocationNew";
 //import Grocery from "./components/Grocery";
 
 //All the files should have only 100 lines of code not more than that
@@ -75,6 +77,10 @@ const appRouter = createBrowserRouter([
       {
         path: "/contact",
         element: <Contact/>
+      },
+      {
+        path: "/location",
+        element: <Location/>
       },
       {
         path: "/grocery",

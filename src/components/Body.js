@@ -52,8 +52,8 @@ const Body = () =>{
             const json = await data.json();
             const arrayOfCards = json?.data?.cards;
             const restaurantListing = "restaurant_grid_listing"; 
-            //console.log(json?.data?.cards[2]?.card?.card?.gridElements?.infoWithStyle?.restaurants); 
-            //   console.log(json); 
+            console.log("here"+json?.data?.cards[2]?.card?.card?.gridElements?.infoWithStyle?.restaurants); 
+             console.log(arrayOfCards); 
 
             //Optional chaining
            

@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const RestaurantCard = (props) =>{
     const {resData} = props;
     
-    const {cloudinaryImageId, name, locality, cuisines, avgRating, id} = resData;
+    const {cloudinaryImageId, name, locality, cuisines, avgRating, id, sla } = resData;
     //console.log({resData});
     //console.log(resData);
     return (
@@ -19,10 +19,11 @@ const RestaurantCard = (props) =>{
                                <div className="flex flex-wrap">
                                <img className="w-4 h-4" src="https://www.clipartmax.com/png/small/307-3078264_star-rating-icon-rating-star-single-png.png" 
                                 alt="Star Rating Icon - Rating Star Single Png @clipartmax.com"/>
-                               <p >{avgRating}</p> 
+                               <p >{avgRating} • {sla.slaString}</p> 
                                </div>
-                            <h5 className="truncate text-sm">{cuisines.join(",")}</h5>  
-                            <h5 className="py-1 text-xs">{locality}</h5>            
+                            <h5 className="truncate text-sm text-gray-500 font-sans">{cuisines.join(", ")}</h5>  
+                            <h5 className="py-1 text-sm text-gray-400">{locality}</h5> 
+                            <h6></h6>           
                             {/* <h6 className="text-sm">Delivery time: {resData.info.sla.deliveryTime}mins</h6> */}
                         </div>
             
