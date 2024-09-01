@@ -30,18 +30,20 @@ const RestaurantCard = (props) =>{
                 </div> 
     )
 }
-
 //Higher order Component
 //input restaurantCard ==>> Output restaurantCardWithOffers
 
 export const withOfferLabel = (RestaurantCard)=>{
-
+ 
     //The new component that higher order component is returning
     return (props)=>{
         //component returns some JSX
+        console.log(props.resData.aggregatedDiscountInfoV3.subHeader);
+
+
         return (
             <div>
-                <label className="absolute bg-black text-white m-2 p-2 rounded-lg">Offer</label>
+                <label className="absolute bg-black text-white m-2 p-2 rounded-lg">{props.resData.aggregatedDiscountInfoV3.subHeader}</label>
                 <RestaurantCard {...props}/>
             </div>
         );
