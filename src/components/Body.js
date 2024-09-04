@@ -8,6 +8,7 @@ import Offline from "./Offline";
 import { withOfferLabel } from "./RestaurantCard";
 import userContext from "../utils/userContext";
 import Footer from "./Footer";
+import WhatsOnMyMind from "./WhatsOnMyMind";
 
 //Body Component
 //Passing a prop to a component is just like passing an argument to a function
@@ -127,6 +128,9 @@ const Body = () =>{
                 </div>
 
                 </div>
+            </div>
+            <div>
+                <WhatsOnMyMind/>
             </div>
             <div className="flex flex-wrap justify-center">
                 {/* restaurantCards */} 

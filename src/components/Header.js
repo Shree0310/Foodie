@@ -97,14 +97,17 @@ const Header = () =>{
                         </Link>
                     </li>
                     <li className="px-4">
-                        <button 
+                        <Link to="/login">
+                            Login
+                        </Link>
+                        {/* <button 
                         className="login"
                         onClick={()=>{
                                     btnName2 === "Login" 
                                     ? setBtnName("Logout") 
                                     : setBtnName("Login");
                                 }}>{btnName2 }
-                        </button>
+                        </button> */}
                     </li>
                     
                     <li className="px-4 font-bold">{loggedInUser} </li>        
