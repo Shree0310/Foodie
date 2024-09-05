@@ -1,22 +1,28 @@
 import { useRef, useState } from "react";
 import { checkValidData } from "../utils/validate";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Login = () =>{
 
     const [isLoginForm, setIsLoginForm] = useState(true);
-    const [errorMessage, setErrorMessage] = useState();
+    const [errorMessage, setErrorMessage] = useState("");
     const email = useRef(null);
     const phone = useRef(null);
     const name = useRef(null); 
+    const navigate = useNavigate();
 
     const toggleLogin = () =>{
         setIsLoginForm(!isLoginForm)
     }
     const handleButtonClick = () =>{
-        //Validate the form data
-        const errorMessage = checkValidData(phone.current.value,email.current.value, name.current.value); 
+        //Validate the form da
+        const phoneValue = phone.current ? phone.current.value : "";
+        // const emailValue = email.value ? email.current.value : "";
+        // const nameValue = name.value ? name.current.value : "";
+        
+        const errorMessage = checkValidData(phoneValue); 
         setErrorMessage(errorMessage);
-        console.log(errorMessage);
     }
     return (
         <div>
@@ -28,13 +34,25 @@ const Login = () =>{
                     <span className="text-black font-light" >Or </span> 
                     <span className="cursor-pointer" onClick={toggleLogin}>{isLoginForm ? "create an account" : "Login to your account"}</span>
                 </h5>
-                <input ref={phone} type="text" placeholder="Phone Number" className="px-2 mx-2 w-10/12 h-[70px] border-gray-300 text-gray-900"/>
+
+                <input 
+                ref={phone} 
+                type="text" 
+                placeholder="Phone Number" 
+                className="px-2 mx-2 w-10/12 h-[70px] border-gray-300 text-gray-900"/>
                 
-                { !isLoginForm && (<input ref={name} type="text" placeholder="Name" className="px-2 mx-2 w-10/12 h-20 border-gray-300 text-gray-900"/>)}
-                { !isLoginForm && (<input ref={email} type="text" placeholder="Email" className="px-2 mx-2 w-10/12 h-20 text-gray-900 border-gray-300"/>)}
+                { !isLoginForm && (<input type="text" placeholder="Name" className="px-2 mx-2 w-10/12 h-[70px] border-gray-300 text-gray-900"/>)}
+                { !isLoginForm && (<input type="text" placeholder="Email" className="px-2 mx-2 w-10/12 h-[70px] text-gray-900 border-gray-300"/>)}
                 { !isLoginForm && (<p className="p-2 text-blue-500 font-medium w-10/12">Have a referral code?</p>)}
                 <p className="py-2 my-2 mx-2 text-red-600 text-sm">{errorMessage}</p>
-                <button className="py-4 my-4 mx-2 w-10/12 bg-orange-500 text-white" onClick={handleButtonClick}>{isLoginForm ? "LOGIN" : "CONTINUE" }</button>
+                <button 
+                className="py-4 my-4 mx-2 w-10/12 bg-orange-500 text-white" 
+                onClick={()=>{
+                    handleButtonClick();
+                    navigate('/signup');
+                }}>
+                        {isLoginForm ? "LOGIN" : "CONTINUE" }
+                </button>
                 </div>
                 
             </form>

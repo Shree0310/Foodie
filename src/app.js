@@ -14,6 +14,7 @@ import Cart from "./components/Cart";
 import Location from "./components/Location";
 import LocationNew from "./components/LocationNew";
 import Login from "./components/Login";
+import SignUp from "./components/SignUp";
 //import Grocery from "./components/Grocery";
 
 //All the files should have only 100 lines of code not more than that
@@ -86,6 +87,10 @@ const appRouter = createBrowserRouter([
       {
         path: "/login",
         element: <Login/>
+      },
+      {
+        path: "/signup",
+        element: <SignUp/>
       },
       {
         path: "/grocery",
