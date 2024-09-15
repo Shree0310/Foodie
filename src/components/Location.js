@@ -54,6 +54,9 @@ const Location = () => {
   return (
     <div className="flex flex-col items-center px-20 font-sans">
       <h2 className="mb-2 font-bold">My Location</h2>
+      <input
+        className="shadow-md border-gray-100 px-2 mx-2 h-[50px] w-10/12">
+      </input>
       <button 
         onClick={getMyLocation} 
         disabled={isLoading}

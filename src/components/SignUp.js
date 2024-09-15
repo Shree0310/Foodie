@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 // import { auth } from "../utils/firebase";
 import { getAuth } from "firebase/auth";
 import { app } from "../utils/firebase";
+import { auth } from "../utils/firebase";
 
 const SignUp = () =>{
     const navigate = useNavigate();
@@ -14,8 +15,6 @@ const SignUp = () =>{
     const [showOTP, setShowOTP] = useState(false);
     const [otp, setOtp] = useState("");
     const [otpSent, setOtpSent] = useState(false);
-
-    const auth = getAuth(app);
 
     useEffect(() => {
         // Initialize reCAPTCHA verifier on component mount
