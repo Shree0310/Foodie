@@ -1,13 +1,15 @@
-import { RecaptchaVerifier, getAuth, signInWithPhoneNumber } from "firebase/auth";
-import { useEffect, useState } from "react";
+import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { useEffect, useState, useRef } from "react";
 import PhoneInput from "react-phone-input-2";
 import { useNavigate } from "react-router-dom";
-// import { auth } from "../utils/firebase";
-import { getAuth } from "firebase/auth";
-import { app } from "../utils/firebase";
 import { auth } from "../utils/firebase";
+import "./custom.css";
+import { checkValidData } from "../utils/validate";
+
 
 const SignUp = () =>{
+    const phone = useRef(null);
+    const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
     const [ph, setPh] = useState("");    
     const [loading, setLoading] = useState(false);
@@ -37,6 +39,19 @@ const SignUp = () =>{
           };
         }, [auth]); 
 
+        const handleButtonClick = () =>{
+            //Validate the form da
+            const phoneValue = phone.current ? phone.current.value : "";
+            // const emailValue = email.value ? email.current.value : "";
+            // const nameValue = name.value ? name.current.value : "";
+            
+            const message = checkValidData(phoneValue); 
+            setErrorMessage(message);
+    
+            if(message === null){
+    
+            }
+        }
 
         const sendOTP = async () => {
         try {
@@ -92,16 +107,24 @@ const SignUp = () =>{
                 value={ph} 
                 onChange={setPh} 
                 type="text" 
-                placeholder="Phone Number" 
-                className="px-2 mx-2 w-10/12 h-[70px] border-gray-300 text-gray-900"/>
+                inputProps={
+                    {
+                        'aria-label': 'Phone Number', 
+                        className: "px-2 mx-2 w-10/12 h-[70px] border-gray-300 text-gray-900"
+                    }
+                }
+                />
 
-                <button 
+            {!otpSent && (<button 
                 variant="contained"
                 className="py-4 my-4 mx-2 w-10/12 bg-orange-500 text-white" 
-                onClick={sendOTP}
+                onClick={()=>{
+                    sendOTP();
+                    handleButtonClick();}}
                 disabled={loading}>
                         {loading ? "Sending OTP..." : "SEND OTP"}
-                </button>
+                </button>)}
+
                 <div id="recaptcha-container"></div>
 
             {otpSent && (
@@ -114,11 +137,6 @@ const SignUp = () =>{
                     />
                     )}  
 
-                {/* <input  
-                type="text" 
-                placeholder="One Time Password" 
-                className="px-2 mx-2 w-10/12 h-[70px] border-gray-300 text-gray-900"/> */}
-
                 {otpSent && (<button 
                 className="py-4 my-4 mx-2 w-10/12 bg-orange-500 text-white" 
                 onClick={()=>{
@@ -129,6 +147,8 @@ const SignUp = () =>{
                      {loading ? "Verifying OTP..." : "VERIFY OTP"}
                 </button>
                 )}
+
+                <p className="py-2 my-2 mx-2 text-red-600 text-sm">{errorMessage}</p>
 
  
             </form>
