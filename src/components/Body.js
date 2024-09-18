@@ -9,6 +9,13 @@ import { withOfferLabel } from "./RestaurantCard";
 import userContext from "../utils/userContext";
 import Footer from "./Footer";
 import WhatsOnMyMind from "./WhatsOnMyMind";
+import { auth } from "../utils/firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import { useDispatch } from "react-redux";
+import { addUser, removeUser } from "../utils/userSlice";
+import { useNavigate } from "react-router-dom";
+
+
 
 //Body Component
 //Passing a prop to a component is just like passing an argument to a function
@@ -16,6 +23,9 @@ import WhatsOnMyMind from "./WhatsOnMyMind";
 //Destructuring in JS?? 
 //Config Driven UI  - website is driven by configs eg Location, controlling the data using the data,config comes from backend
 const Body = () =>{
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     //Local state variable = super powerful variable
     //Scope of the local state variable is inside the component 
@@ -41,9 +51,28 @@ const Body = () =>{
     //If you want to do something after the erendering of the component then do it inside the useEffect
     //So it keeps the callback function to call it afterwards i.e after the component is rendered 
     useEffect(()=>{
-        fetchData();
-        console.log("useEffect called")
-    }, []);
+        console.log("useEffect called");
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+              const {uid, email, displayName} = user;
+              console.log(user);
+              //sign in logic
+              dispatch(addUser({uid: uid, email: email, displayName: displayName}));
+              navigate("/"); 
+              setUserInfo(displayName || email);
+            } else {
+              // User is signed out
+              dispatch(removeUser());
+              navigate("/login");
+              setUserInfo("");
+            }
+          });
+          fetchData();
+
+          //cleanup function
+          return () => unsubscribe();
+
+    }, [dispatch, navigate, setUserInfo]);
 
     const fetchData = async () =>{
         //We get fetch from Browser

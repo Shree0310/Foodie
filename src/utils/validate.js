@@ -1,16 +1,21 @@
 //Form validation logic inside utils
 
-export const checkValidData = (phone) =>{
+export const checkValidData = (phone, email, name) =>{
 
-    const isPhoneValid = /^(\+\d{1,3}[- ]?)?\d{10}$/.test(phone);
-    // const isEmailValid = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/.test(email);
-    // const isNameValid = /\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+/.test(name);
+    const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    // if(!isNameValid) return "Name is not valid!";
-    if(!isPhoneValid) return "Phone number is not valid!";
-    // if(!isEmailValid) return "Email is not valid!";
+    if (!phone) return "Phone number is required";
+    if (!phoneRegex.test(phone)) return "Please enter a valid phone number";
 
-    return null; 
+    if (!email) return "Email is required";
+    if (!emailRegex.test(email)) return "Please enter a valid email address";
+    
+    if (!name) return "Name is required";
+    if (name.length < 2) return "Name should be at least 2 characters long";
+
+    
+    return null;
 
 
 }

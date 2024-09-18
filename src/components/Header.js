@@ -5,6 +5,12 @@ import { Link  } from "react-router-dom";
 import useOfflinePage from "../utils/useOfflinePage";
 import userContext from "../utils/userContext";
 import { useSelector } from "react-redux";
+import { auth } from "../utils/firebase";
+import { signOut } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { removeUser } from "../utils/userSlice";
+
 
 //All the react code is kept inside the src folder
 //It is a JS object
@@ -16,14 +22,17 @@ const styleHeader ={
  
  //Header Component
 const Header = () =>{
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     //Hooks can only be called inside the body of a component 
     //Never define the hooks inside a if else block, functions, for loop
     //A good pratice is to define them on the top always
     //useState makes the component to rerender and on the re-render, it is a new btnName2 variable formed with the updated value (here "Logout ")
-    const [btnName2, setBtnName] = useState("Login");
     console.log("Header Render");
 
     const {loggedInUser} = useContext(userContext);
+    const user = useSelector((store)=> store.user);
     //console.log(data);
 
     //two arguments are: a callback function and a dependency array
@@ -31,9 +40,23 @@ const Header = () =>{
     //if no dependency array => useEffect is called after every render of the component
     //if dependency array is empty = [] => useEffect is only called on the initial render(just once )
     //if dependency array is [btnName2] => usEffect is called on the initial render &  every time btnName2 is updated 
-    useEffect(()=>{
-        console.log("useEffect called"); 
-    },[btnName2]);
+
+
+    const handleAuthAction =()=>{
+        if(user){
+            signOut(auth).then(() => {
+                // Sign-out successful.
+                navigate("/"); 
+                dispatch(removeUser());
+              }).catch((error) => {
+                // An error happened.
+                console.error("sign out error happened");
+              });
+        }else{
+            navigate("/login");
+        }
+        
+    }
 
     const offlineStatus = useOfflinePage();
 
@@ -97,20 +120,18 @@ const Header = () =>{
                         </Link>
                     </li>
                     <li className="px-4">
-                        <Link to="/login">
+                        {/* <Link to="/login">
                             Login
-                        </Link>
-                        {/* <button 
-                        className="login"
-                        onClick={()=>{
-                                    btnName2 === "Login" 
-                                    ? setBtnName("Logout") 
-                                    : setBtnName("Login");
-                                }}>{btnName2 }
-                        </button> */}
+                        </Link> */}
+                        <button
+                        
+                        onClick={handleAuthAction}>
+                            {user? "Logout" : "Login" }
+                        </button>
+                        
                     </li>
                     
-                    <li className="px-4 font-bold">{loggedInUser} </li>        
+                    {user && (<li className="px-4 font-bold">{user.displayName || user.email} </li> )}       
                 </ul>
         </div>
         </div>

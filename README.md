@@ -18,6 +18,7 @@
  - Https 
  - Tree Shaking - remove unused code for you
  - Different Dev & Prod bundles
+ - Using onAuthState chenge method given by Firebase
   
   # Food Ordering App
   /**

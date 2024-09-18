@@ -1,4 +1,4 @@
-import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { RecaptchaVerifier, signInWithPhoneNumber, updateProfile } from "firebase/auth";
 import { useEffect, useState, useRef } from "react";
 import PhoneInput from "react-phone-input-2";
 import { useNavigate } from "react-router-dom";
@@ -11,7 +11,9 @@ const SignUp = () =>{
     const phone = useRef(null);
     const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
-    const [ph, setPh] = useState("");    
+    const [ph, setPh] = useState("");  
+    const [email, setEmail] = useState("");
+    const [name, setName] = useState("");  
     const [loading, setLoading] = useState(false);
     const [user, setUser] = useState(null);
     const [showOTP, setShowOTP] = useState(false);
@@ -45,11 +47,11 @@ const SignUp = () =>{
             // const emailValue = email.value ? email.current.value : "";
             // const nameValue = name.value ? name.current.value : "";
             
-            const message = checkValidData(phoneValue); 
+            const message = checkValidData(phoneValue, email, name); 
             setErrorMessage(message);
     
             if(message === null){
-    
+                sendOTP();
             }
         }
 
@@ -81,8 +83,14 @@ const SignUp = () =>{
             const result = await confirmationResult.confirm(otp);
             console.log("OTP verified:", result);
             setUser(result.user);
+
+            // Update user profile with name and email
+            await updateProfile(result.user, {
+                email: email, 
+                displayName: name,
+            });
             setLoading(false);
-            navigate("/"); // Navigate only after successful verification
+            //navigate("/"); // Navigate only after successful verification
           } catch (error) {
             console.error("Error verifying OTP:", error);
             setLoading(false);
@@ -114,6 +122,25 @@ const SignUp = () =>{
                     }
                 }
                 />
+
+            <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e)=> setEmail(e.target.value)}
+            className="px-2 mx-2 w-10/12 h-[70px] border-gray-300 text-gray-900"
+            />    
+
+            <input
+            type="text"
+            placeholder="Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="px-2 mx-2 w-10/12 h-[70px] border-gray-300 text-gray-900"
+                />
+
+            <p className="p-2 text-blue-500 font-medium w-10/12">Have a referral code?</p>
+    
 
             {!otpSent && (<button 
                 variant="contained"
