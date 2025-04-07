@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import useRestaurantMenu from "../utils/useRestaurantMenu";
 import RestaurantCategory from "./RestaurantCategory"; 
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addItem, removeItem } from "../utils/cartSlice";
 
 
 //RestaurantMenu component should be worried only about displaying the restaurant menu and 
@@ -17,6 +19,10 @@ const RestaurantMenu = ()=>{
 
     const [showIndex,setShowIndex] = useState(null); 
   
+    const dispatch = useDispatch();
+
+    const cartItems = useSelector((store) => store.cart.items);
+
     if(resInfo === null){
         return <Shimmer/>
     }
@@ -40,6 +46,12 @@ const RestaurantMenu = ()=>{
           "type.googleapis.com/swiggy.presentation.food.v2.ItemCategory"
       );
     //console.log(categories);
+
+    const getItemQuantity = (itemId) => {
+        const existingItem = cartItems.find(item => item.id === itemId);
+        return existingItem ? existingItem.quantity : 0;
+    };
+
     return (
         <div className="menu">
             <div className="menu-header-combined">
@@ -63,6 +75,8 @@ const RestaurantMenu = ()=>{
                 showItems = {index === showIndex ? true: false}
                 closeItem = {showIndex ? false: true}
                 setShowIndex = {() => setShowIndex(index)}
+                cartItems={cartItems}
+                getItemQuantity={getItemQuantity}
                 />))}               
             </div>                                    
         </div>

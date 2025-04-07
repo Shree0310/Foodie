@@ -1,7 +1,7 @@
 import ItemList from "./ItemList";
 import { useState } from "react";
 
-const RestaurantCategory = ({catData, showItems, setShowIndex})=>{
+const RestaurantCategory = ({catData, showItems, setShowIndex, closeItem, cartItems, getItemQuantity})=>{
      //console.log(catData);
      const items = catData.itemCards.forEach((item)=>item.card.info.name);
      //console.log(items);
@@ -22,11 +22,24 @@ const RestaurantCategory = ({catData, showItems, setShowIndex})=>{
             <div className="w-6/12 mx-auto my-4 bg-gray-50 shadow-lg p-4">
                 <div className="flex justify-between cursor-pointer" onClick={handleClick}>
                     <span className="font-bold text-lg">{catData.title} ({catData.itemCards.length})</span>
-                        <svg data-accordion-icon className="w-3 h-3 rotate-180 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5 5 1 1 5"/>
-                        </svg>
+                    <svg 
+                        data-accordion-icon 
+                        className="w-3 h-3 rotate-180 shrink-0" 
+                        aria-hidden="true" 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        fill="none" 
+                        viewBox="0 0 10 6"
+                    >
+                        <path 
+                            stroke="currentColor" 
+                            strokeLinecap="round" 
+                            strokeLinejoin="round" 
+                            strokeWidth="2" 
+                            d="M9 5 5 1 1 5"
+                        />
+                    </svg>
                 </div>
-                {showItems  && toggleItem  && <ItemList itemsData = {catData.itemCards} />}   
+                {showItems  && toggleItem  && <ItemList itemsData = {catData.itemCards} cartItems={cartItems} getItemQuantity={getItemQuantity} />}   
             </div>
 
             {/* Accordion Body */}
