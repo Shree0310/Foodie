@@ -16,6 +16,7 @@ import { addUser, removeUser, enableDemoMode } from "../utils/userSlice";
 import { useNavigate } from "react-router-dom";
 import HeroSection from "./HeroSection";
 import PageTransition from "./PageTransition";
+import Pagination from "./Pagination";
 
 // Body Component
 const Body = () => {
@@ -28,6 +29,8 @@ const Body = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [searchError, setSearchError] = useState("");
     const [activeFilter, setActiveFilter] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(8);
 
     const RestaurantWithOffer = withOfferLabel(RestaurantCard);
     const {setUserInfo, loggedInUser} = useContext(userContext);
@@ -140,6 +143,21 @@ const Body = () => {
 
     const offlineStatus = useOfflinePage();
 
+    // Handle page change
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+        // Optionally scroll to top of restaurant section
+        const restaurantSection = document.getElementById('restaurant-list');
+        if (restaurantSection) {
+            restaurantSection.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+    
+    // Calculate the current restaurants to display
+    const indexOfLastRestaurant = currentPage * itemsPerPage;
+    const indexOfFirstRestaurant = indexOfLastRestaurant - itemsPerPage;
+    const currentRestaurants = filteredRestaurants.slice(indexOfFirstRestaurant, indexOfLastRestaurant);
+
     if (offlineStatus) {
         return <Offline />;
     }
@@ -226,7 +244,7 @@ const Body = () => {
                         </div>
 
                         {/* Restaurant List */}
-                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12" id="restaurant-list">
                             <h2 className="text-2xl font-bold text-gray-800 mb-6">
                                 {activeFilter ? 
                                     `${activeFilter === "rating" ? "Top Rated" : 
@@ -257,19 +275,36 @@ const Body = () => {
                                     </button>
                                 </div>
                             ) : (
-                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center mx-auto">
-                                    {listOfRestaurants.map(restaurant => (
-                                        <Link 
-                                            className="h-full w-full max-w-xs" 
-                                            key={restaurant?.info.id} 
-                                            to={"/restaurants/" + restaurant?.info.id}
-                                        > 
-                                            {restaurant.info.aggregatedDiscountInfoV3 ? 
-                                                <RestaurantWithOffer resData={restaurant?.info} /> : 
-                                                <RestaurantCard resData={restaurant?.info} />
-                                            }
-                                        </Link>
-                                    ))}
+                                <div className="bg-white rounded-lg shadow-md p-6">
+                                    <h3 className="text-sm text-gray-500 mb-4">
+                                        Showing {indexOfFirstRestaurant + 1}-{Math.min(indexOfLastRestaurant, listOfRestaurants.length)} of {listOfRestaurants.length} restaurants
+                                    </h3>
+                                    
+                                    {/* Restaurant cards grid */}
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                        {currentRestaurants.map((restaurant) => (
+                                            <Link
+                                                key={restaurant.info.id}
+                                                to={"/restaurants/" + restaurant.info.id}
+                                                className="block transition-transform duration-200 hover:scale-105"
+                                            >
+                                                {restaurant.info.aggregatedDiscountInfoV3 ? 
+                                                    <RestaurantWithOffer resData={restaurant} /> : 
+                                                    <RestaurantCard resData={restaurant} />
+                                                }
+                                            </Link>
+                                        ))}
+                                    </div>
+                                    
+                                    {/* Pagination component */}
+                                    {listOfRestaurants.length > 0 && (
+                                        <Pagination
+                                            currentPage={currentPage}
+                                            totalItems={listOfRestaurants.length}
+                                            itemsPerPage={itemsPerPage}
+                                            onPageChange={handlePageChange}
+                                        />
+                                    )}
                                 </div>
                             )}
                         </div>

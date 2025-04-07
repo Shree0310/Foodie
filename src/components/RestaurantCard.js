@@ -2,10 +2,11 @@ import { CDN_URL } from "../utils/constants";
 import { colors } from "../utils/designSystem";
 
 //Whenever we need something that we need to reuse then create a new component for it
-const RestaurantCard = (props) =>{
-    const {resData} = props;
+const RestaurantCard = (props) => {
+    // Extract restaurant info, handling both data structures
+    const restaurantInfo = props.resData?.info || props.resData;
     
-    const {cloudinaryImageId, name, locality, cuisines, avgRating, id, sla } = resData;
+    const {cloudinaryImageId, name, locality, cuisines, avgRating, id, sla } = restaurantInfo;
     //console.log({resData});
     //console.log(resData);
     return (
@@ -61,18 +62,23 @@ export const withOfferLabel = (RestaurantCard)=>{
  
     //The new component that higher order component is returning
     return (props)=>{
-        //component returns some JSX
-        console.log(props.resData.aggregatedDiscountInfoV3.subHeader);
-
-
+        // Add null check before accessing properties
+        const discountInfo = props.resData?.info?.aggregatedDiscountInfoV3 || 
+                              props.resData?.aggregatedDiscountInfoV3;
+        
+        // Only try to access subHeader if discountInfo exists
+        const offerText = discountInfo?.subHeader || discountInfo?.header || "OFFER";
+        
         return (
             <div className="relative">
-                <div className="absolute -top-1 -left-1 z-10">
-                    <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold py-1 px-3 rounded-br-xl rounded-tl-xl shadow-md">
-                        {props.resData.aggregatedDiscountInfoV3.header}
-                    </div>
-                </div>
                 <RestaurantCard {...props}/>
+                
+                {/* Offer label overlay */}
+                {discountInfo && (
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent text-white p-2 rounded-b-lg">
+                        <p className="text-sm font-medium text-center">{offerText}</p>
+                    </div>
+                )}
             </div>
         );
 
