@@ -1,6 +1,6 @@
 import RestaurantCard from "./RestaurantCard";
 import resArray from "../utils/mockData";
-import { useState, useEffect, useContext  } from "react";
+import { useState, useEffect, useContext } from "react";
 import Shimmer from "./Shimmer";
 import { Link } from "react-router-dom";
 import useOfflinePage from "../utils/useOfflinePage";
@@ -17,28 +17,12 @@ import { useNavigate } from "react-router-dom";
 import HeroSection from "./HeroSection";
 import PageTransition from "./PageTransition";
 
-
-
-//Body Component
-//Passing a prop to a component is just like passing an argument to a function
-//Whenever we want to pass dynamic data we use props in react 
-//Destructuring in JS?? 
-//Config Driven UI  - website is driven by configs eg Location, controlling the data using the data,config comes from backend
-const Body = () =>{
-
+// Body Component
+const Body = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    //Local state variable = super powerful variable
-    //Scope of the local state variable is inside the component 
-    //useState maintains the state of your component
-    //Nomenclature to add setOf in front of the variable name in the name of second variable which is a function
-    //whenever state variable updates React re- renders the component
-    //Hence React is Good at DOM manipulations 
-    //The second function acts as a trigger and whenever it is called it checks the diff and rerenders the UI 
-    //Array destructuring 
-    //Hooks are just normal js functions given by React that have specifice use cases
-    const  [listOfRestaurants, setListOfRestaurant] = useState([]);
+    const [listOfRestaurants, setListOfRestaurant] = useState([]);
     const [searchText, setSearchText] = useState("");
     const [filteredRestaurants, setFilteredRestaurants] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -46,15 +30,65 @@ const Body = () =>{
     const [activeFilter, setActiveFilter] = useState("");
 
     const RestaurantWithOffer = withOfferLabel(RestaurantCard);
+    const {setUserInfo, loggedInUser} = useContext(userContext);
 
-    const {setUserInfo,loggedInUser} = useContext(userContext);
+    // Move both functions inside the component
+    const handleSearch = () => {
+        if (!searchText.trim()) {
+            setListOfRestaurant(filteredRestaurants);
+            setSearchError("");
+            return;
+        }
+        
+        const searchResults = filteredRestaurants.filter(
+            restaurant => 
+                restaurant.info.name.toLowerCase().includes(searchText.toLowerCase()) ||
+                restaurant.info.cuisines.some(cuisine => 
+                    cuisine.toLowerCase().includes(searchText.toLowerCase())
+                )
+        );
+        
+        if (searchResults.length === 0) {
+            setSearchError(`No restaurants found matching "${searchText}"`);
+        } else {
+            setSearchError("");
+        }
+        
+        setListOfRestaurant(searchResults);
+    };
 
-    //console.log(listOfRestaurants);
+    const applyFilter = (filterType) => {
+        if (!filteredRestaurants || filteredRestaurants.length === 0) {
+            return;
+        }
+        
+        if (activeFilter === filterType) {
+            setActiveFilter("");
+            setListOfRestaurant(filteredRestaurants);
+            return;
+        }
+        
+        setActiveFilter(filterType);
+        
+        let filtered = [];
+        switch (filterType) {
+            case "rating":
+                filtered = filteredRestaurants.filter(res => parseFloat(res.info.avgRating) > 4.0);
+                break;
+            case "fast-delivery":
+                filtered = filteredRestaurants.filter(res => res.info.sla?.deliveryTime < 30);
+                break;
+            case "offers":
+                filtered = filteredRestaurants.filter(res => res.info.aggregatedDiscountInfoV3);
+                break;
+            default:
+                filtered = [...filteredRestaurants];
+                break;
+        }
+        
+        setListOfRestaurant(filtered);
+    };
 
-    //It takes two arguments - 1. is a callback function, 2. dependency array
-    //This useEffect callback function is called after the component renders 
-    //If you want to do something after the erendering of the component then do it inside the useEffect
-    //So it keeps the callback function to call it afterwards i.e after the component is rendered 
     useEffect(() => {
         fetchData();
         
@@ -75,23 +109,18 @@ const Body = () =>{
     const fetchData = async () => {
         setIsLoading(true);
         try {
-            // We get fetch from Browser
             const url = "https://swiggy.adiagr.in/dapi/restaurants/list/v5?lat=12.9650186&lng=77.7595472&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING";
             const response = await fetch(url);
             
-            // Check if response is successful
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
             
             const json = await response.json();
             
-            // Add logging to see what data is coming back
             console.log("API Response:", json);
             
-            // Check if the expected data structure exists
             if (json?.data?.cards && Array.isArray(json.data.cards)) {
-                // Update the component state with the fetched data
                 const restaurants = json.data.cards.find(card => 
                     card?.card?.card?.gridElements?.infoWithStyle?.restaurants
                 )?.card?.card?.gridElements?.infoWithStyle?.restaurants || [];
@@ -103,7 +132,6 @@ const Body = () =>{
             }
         } catch (error) {
             console.error("Error fetching restaurant data:", error);
-            // Set some default data or show error state
             setListOfRestaurant([]);
         } finally {
             setIsLoading(false);
@@ -112,13 +140,10 @@ const Body = () =>{
 
     const offlineStatus = useOfflinePage();
 
-   if(offlineStatus){
-     return <Offline/>
-   } 
+    if (offlineStatus) {
+        return <Offline />;
+    }
 
-    //whenever state variable updates, react triggers a reconciliation cycle(re-renders the component )
-    
-    //Using ternary operation
     return (
         <PageTransition>
             <div className="min-h-screen bg-gray-50">
@@ -130,6 +155,7 @@ const Body = () =>{
                             <HeroSection />
                         </div>
                         
+                        {/* Search Bar */}
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
                             <div className="bg-white p-6 rounded-lg shadow-md">
                                 <div className="flex flex-col md:flex-row gap-4">
@@ -155,6 +181,7 @@ const Body = () =>{
                             </div>
                         </div>
                         
+                        {/* Filter Section */}
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
                             <div className="flex flex-wrap gap-3">
                                 <button
@@ -246,60 +273,7 @@ const Body = () =>{
                 <Footer />
             </div>
         </PageTransition>
-    )
-}
-
-const handleSearch = () => {
-    if (!searchText.trim()) {
-        setListOfRestaurant(filteredRestaurants);
-        setSearchError("");
-        return;
-    }
-    
-    const searchResults = filteredRestaurants.filter(
-        restaurant => 
-            restaurant.info.name.toLowerCase().includes(searchText.toLowerCase()) ||
-            restaurant.info.cuisines.some(cuisine => 
-                cuisine.toLowerCase().includes(searchText.toLowerCase())
-            )
     );
-    
-    if (searchResults.length === 0) {
-        setSearchError(`No restaurants found matching "${searchText}"`);
-    } else {
-        setSearchError("");
-    }
-    
-    setListOfRestaurant(searchResults);
 };
 
-const applyFilter = (filterType) => {
-    let filtered = [...filteredRestaurants];
-    
-    if (activeFilter === filterType) {
-        setActiveFilter("");
-        setListOfRestaurant(filteredRestaurants);
-        return;
-    }
-    
-    setActiveFilter(filterType);
-    
-    switch (filterType) {
-        case "rating":
-            filtered = filteredRestaurants.filter(res => res.info.avgRating > 4.0);
-            break;
-        case "fast-delivery":
-            filtered = filteredRestaurants.filter(res => res.info.sla?.deliveryTime < 30);
-            break;
-        case "offers":
-            filtered = filteredRestaurants.filter(res => res.info.aggregatedDiscountInfoV3);
-            break;
-        default:
-            break;
-    }
-    
-    setListOfRestaurant(filtered);
-};
-
-//Exporting the body
 export default Body;
