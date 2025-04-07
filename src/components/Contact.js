@@ -83,8 +83,8 @@ const Contact = () => {
                                                 </svg>
                                             </div>
                                             <div className="ml-4">
-                                                <p className="text-gray-700">+1 (555) 123-4567</p>
-                                                <p className="text-gray-600 text-sm">Mon-Fri 9am-6pm</p>
+                                                <p className="text-gray-700">+91 98765 43210</p>
+                                                <p className="text-gray-600 text-sm">Mon-Sat 10am-8pm</p>
                                             </div>
                                         </div>
 
@@ -95,7 +95,7 @@ const Contact = () => {
                                                 </svg>
                                             </div>
                                             <div className="ml-4">
-                                                <p className="text-gray-700">support@foodorder.com</p>
+                                                <p className="text-gray-700">support@foodastra.in</p>
                                                 <p className="text-gray-600 text-sm">We'll respond within 24 hours</p>
                                             </div>
                                         </div>
@@ -108,8 +108,8 @@ const Contact = () => {
                                                 </svg>
                                             </div>
                                             <div className="ml-4">
-                                                <p className="text-gray-700">123 Food Street</p>
-                                                <p className="text-gray-600 text-sm">San Francisco, CA 94107</p>
+                                                <p className="text-gray-700">42 Connaught Place</p>
+                                                <p className="text-gray-600 text-sm">New Delhi, 110001</p>
                                             </div>
                                         </div>
                                     </div>
