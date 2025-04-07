@@ -166,6 +166,12 @@ const Body = () => {
                                             placeholder="Search for restaurants or cuisines..."
                                             value={searchText}
                                             onChange={(e) => setSearchText(e.target.value)}
+                                            onKeyDown={(e) => {
+                                                if (e.key === "Enter") {
+                                                    e.preventDefault();
+                                                    handleSearch();
+                                                }
+                                            }}
                                         />
                                         {searchError && (
                                             <p className="mt-2 text-red-500">{searchError}</p>
@@ -214,8 +220,8 @@ const Body = () => {
                             </div>
                         </div>
 
-                        {/* WhatsOnMyMind Section */}
-                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+                        {/* What's on my mind section */}
+                        <div id="whats-on-my-mind" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
                             <WhatsOnMyMind />
                         </div>
 
@@ -251,10 +257,10 @@ const Body = () => {
                                     </button>
                                 </div>
                             ) : (
-                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center mx-auto">
                                     {listOfRestaurants.map(restaurant => (
                                         <Link 
-                                            className="h-full" 
+                                            className="h-full w-full max-w-xs" 
                                             key={restaurant?.info.id} 
                                             to={"/restaurants/" + restaurant?.info.id}
                                         > 

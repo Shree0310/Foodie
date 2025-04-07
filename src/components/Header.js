@@ -105,9 +105,7 @@ const Header = () =>{
                         <Link to="/" className={`text-sm font-medium ${isActive('/') ? 'text-orange-500' : 'text-gray-700 hover:text-gray-900'}`}>
                             Home
                         </Link>
-                        <Link to="/about" className={`text-sm font-medium ${isActive('/about') ? 'text-orange-500' : 'text-gray-700 hover:text-gray-900'}`}>
-                            About
-                        </Link>
+                        <Link to="/about" className="nav-link">About</Link>
                         <Link to="/contact" className={`text-sm font-medium ${isActive('/contact') ? 'text-orange-500' : 'text-gray-700 hover:text-gray-900'}`}>
                             Contact
                         </Link>
