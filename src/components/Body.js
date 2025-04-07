@@ -37,6 +37,9 @@ const Body = () => {
 
     // Move both functions inside the component
     const handleSearch = () => {
+        // Reset to page 1 when searching
+        setCurrentPage(1);
+        
         if (!searchText.trim()) {
             setListOfRestaurant(filteredRestaurants);
             setSearchError("");
@@ -65,6 +68,9 @@ const Body = () => {
             return;
         }
         
+        // Reset to page 1 when changing filters
+        setCurrentPage(1);
+        
         if (activeFilter === filterType) {
             setActiveFilter("");
             setListOfRestaurant(filteredRestaurants);
@@ -76,10 +82,20 @@ const Body = () => {
         let filtered = [];
         switch (filterType) {
             case "rating":
-                filtered = filteredRestaurants.filter(res => parseFloat(res.info.avgRating) > 4.0);
+                // Filter restaurants with ratings and sort by rating (highest first)
+                filtered = [...filteredRestaurants]
+                    .filter(res => res.info.avgRating) // Ensure restaurant has a rating
+                    .sort((a, b) => {
+                        const ratingA = parseFloat(a.info.avgRating);
+                        const ratingB = parseFloat(b.info.avgRating);
+                        return ratingB - ratingA; // Sort descending
+                    });
                 break;
             case "fast-delivery":
-                filtered = filteredRestaurants.filter(res => res.info.sla?.deliveryTime < 30);
+                // Sort by delivery time (fastest first)
+                filtered = [...filteredRestaurants]
+                    .filter(res => res.info.sla?.deliveryTime)
+                    .sort((a, b) => a.info.sla.deliveryTime - b.info.sla.deliveryTime);
                 break;
             case "offers":
                 filtered = filteredRestaurants.filter(res => res.info.aggregatedDiscountInfoV3);
@@ -156,7 +172,7 @@ const Body = () => {
     // Calculate the current restaurants to display
     const indexOfLastRestaurant = currentPage * itemsPerPage;
     const indexOfFirstRestaurant = indexOfLastRestaurant - itemsPerPage;
-    const currentRestaurants = filteredRestaurants.slice(indexOfFirstRestaurant, indexOfLastRestaurant);
+    const currentRestaurants = listOfRestaurants.slice(indexOfFirstRestaurant, indexOfLastRestaurant);
 
     if (offlineStatus) {
         return <Offline />;
