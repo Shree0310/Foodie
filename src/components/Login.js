@@ -6,6 +6,8 @@ import { auth } from "../utils/firebase";
 import PhoneInput from "react-phone-input-2";
 import PhoneInput from "react-phone-input-2";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { enableDemoMode } from "../utils/userSlice";
+import { useDispatch } from "react-redux";
 
 
 
@@ -24,6 +26,7 @@ const Login = () =>{
     const [otpSent, setOtpSent] = useState(false);
     const [user, setUser] = useState(null);
     const [mobileNumber, setMobileNumber ] = useState(false);
+    const dispatch = useDispatch();
 
 
 
@@ -105,79 +108,95 @@ const Login = () =>{
         }
     }
 
+    const handleDemoMode = () => {
+        console.log("Enabling demo mode...");  // Add logging
+        dispatch(enableDemoMode());
+        navigate("/");
+    }
 
     return (
-        <div>
-            
-            <form onSubmit={(e)=>e.preventDefault()} className="md:w-4/12 p-12 mx-auto my-36 right-0 left-0">
-                <div className="">
-                <h1 className="font-semibold text-3xl tracking-wider font-sans p-2">{isLoginForm ?  "Login" : "Sign up"}</h1>
-                <h5 className="text-xs text-orange-400 font-bold p-2">
-                    <span className="text-black font-light" >Or </span> 
-                    <span className="cursor-pointer" onClick={()=>{navigate('/signup')}}>{isLoginForm ? "create an account" : "Login to your account"}</span>
-                </h5>
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+            <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
+                <form onSubmit={(e)=>e.preventDefault()} className="w-full">
+                    <div className="mb-4">
+                        <h1 className="font-semibold text-3xl tracking-wider font-sans p-2 mb-2">
+                            {isLoginForm ? "Login" : "Sign up"}
+                        </h1>
+                        <h5 className="text-xs text-orange-400 font-bold p-2 mb-4">
+                            <span className="text-black font-light">Or </span> 
+                            <span className="cursor-pointer" onClick={()=>{navigate('/signup')}}>
+                                {isLoginForm ? "create an account" : "Login to your account"}
+                            </span>
+                        </h5>
 
-                <PhoneInput
-                country={"in"} 
-                value={ph} 
-                onChange={setPh} 
-                type="text" 
-                inputProps={
-                    {
-                        'aria-label': 'Phone Number', 
-                        className: "px-2 mx-2 w-10/12 h-[70px] border-gray-300 text-gray-900"
-                    }
-                }
-                />
+                        <PhoneInput
+                            country={"in"} 
+                            value={ph} 
+                            onChange={setPh} 
+                            type="text" 
+                            inputProps={{
+                                'aria-label': 'Phone Number', 
+                                className: "px-2 mx-2 w-full h-[70px] border-gray-300 text-gray-900"
+                            }}
+                        />
 
+                        {!otpSent && (<button
+                            variant="contained"
+                            className="py-4 my-4 mx-2 w-10/12 bg-orange-500 text-white" 
+                            onClick={()=>{
+                                sendOTP();
+                                // navigate("/signup");
+                                }}
+                            disabled={loading}>
+                                {isLoginForm ? "LOGIN" : "CONTINUE" }                       
+                            </button>)}
+
+                        {otpSent && (
+                            <input
+                            onChange={(e)=> setOtp(e.target.value)}
+                                type="text"
+                                placeholder="One Time Password"
+                                value={otp}
+                                className="px-2 mx-2 w-10/12 h-[70px] border-gray-300 text-gray-900"
+                            />
+                            )}  
+
+                        {otpSent  && (
+
+                            <button 
+                        className="py-4 my-4 mx-2 w-10/12 bg-orange-500 text-white" 
+                        onClick={()=>{
+                            verifyOTP();
+                            //navigate("/");
+                            }}
+                        disabled={loading}>
+                         {loading ? "Verifying OTP..." : "VERIFY OTP"}
+                    </button>                  
+                    ) }
+                  
+                    <div id="recaptcha-container"></div>
+                    
+                </div>
                 
-                
-                {/* { !isLoginForm && (<input type="text" placeholder="Name" className="px-2 mx-2 w-10/12 h-[70px] border-gray-300 text-gray-900"/>)}
-                { !isLoginForm && (<input type="text" placeholder="Email" className="px-2 mx-2 w-10/12 h-[70px] text-gray-900 border-gray-300"/>)} */}
-                {/* { !isLoginForm && (<p className="p-2 text-blue-500 font-medium w-10/12">Have a referral code?</p>)} */}
-
-                
-                {!otpSent && (<button
-                    variant="contained"
-                    className="py-4 my-4 mx-2 w-10/12 bg-orange-500 text-white" 
-                    onClick={()=>{
-                        sendOTP();
-                        // navigate("/signup");
-                        }}
-                    disabled={loading}>
-                        {isLoginForm ? "LOGIN" : "CONTINUE" }                       
-                    </button>)}
-
-                {otpSent && (
-                    <input
-                    onChange={(e)=> setOtp(e.target.value)}
-                        type="text"
-                        placeholder="One Time Password"
-                        value={otp}
-                        className="px-2 mx-2 w-10/12 h-[70px] border-gray-300 text-gray-900"
-                    />
-                    )}  
-
-                {otpSent  && (
-
-                    <button 
-                className="py-4 my-4 mx-2 w-10/12 bg-orange-500 text-white" 
-                onClick={()=>{
-                    verifyOTP();
-                    //navigate("/");
-                    }}
-                    disabled={loading}>
-                     {loading ? "Verifying OTP..." : "VERIFY OTP"}
-                </button>                  
-                ) }
-              
-                <div id="recaptcha-container"></div>
-                
-            </div>
                 <p className="py-2 my-2 mx-2 text-red-600 text-sm">{errorMessage}</p>
                 
-            </form>
+                </form>
 
+                <div className="mt-6 border-t pt-6">
+                    <p className="text-center font-medium text-gray-600 mb-3">
+                        Just browsing? Try our demo!
+                    </p>
+                    <button 
+                        onClick={handleDemoMode}
+                        className="w-full py-3 bg-green-500 text-white font-medium rounded-lg hover:bg-green-600 transition-colors"
+                    >
+                        Experience Demo Mode
+                    </button>
+                    <p className="text-xs text-gray-500 mt-2 text-center">
+                        No login required - explore our app features instantly
+                    </p>
+                </div>
+            </div>
         </div>
     )
 }

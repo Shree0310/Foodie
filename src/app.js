@@ -16,6 +16,7 @@ import LocationNew from "./components/LocationNew";
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
 //import Grocery from "./components/Grocery";
+import DemoModeIndicator from "./components/DemoModeIndicator";
 
 //All the files should have only 100 lines of code not more than that
 const styleCard = {
@@ -43,6 +44,8 @@ const AppLayout = ()=>{
         name: ""
       };
       setUserInfo(data.name);
+      
+      // Can optionally retrieve demo status if stored in localStorage
     },[])
 
      return (
@@ -53,6 +56,7 @@ const AppLayout = ()=>{
           <div className="app">    
             <Header/>         
             <Outlet/> 
+            <DemoModeIndicator />
           </div>
         </userContext.Provider>
       </Provider> 

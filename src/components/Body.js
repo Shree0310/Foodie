@@ -12,8 +12,10 @@ import WhatsOnMyMind from "./WhatsOnMyMind";
 import { auth } from "../utils/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { useDispatch } from "react-redux";
-import { addUser, removeUser } from "../utils/userSlice";
+import { addUser, removeUser, enableDemoMode } from "../utils/userSlice";
 import { useNavigate } from "react-router-dom";
+import HeroSection from "./HeroSection";
+import PageTransition from "./PageTransition";
 
 
 
@@ -39,6 +41,9 @@ const Body = () =>{
     const  [listOfRestaurants, setListOfRestaurant] = useState([]);
     const [searchText, setSearchText] = useState("");
     const [filteredRestaurants, setFilteredRestaurants] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [searchError, setSearchError] = useState("");
+    const [activeFilter, setActiveFilter] = useState("");
 
     const RestaurantWithOffer = withOfferLabel(RestaurantCard);
 
@@ -50,53 +55,60 @@ const Body = () =>{
     //This useEffect callback function is called after the component renders 
     //If you want to do something after the erendering of the component then do it inside the useEffect
     //So it keeps the callback function to call it afterwards i.e after the component is rendered 
-    useEffect(()=>{
-        console.log("useEffect called");
+    useEffect(() => {
+        fetchData();
+        
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
-              const {uid, email, displayName} = user;
-              console.log(user);
-              //sign in logic
-              dispatch(addUser({uid: uid, email: email, displayName: displayName}));
-              navigate("/"); 
-              setUserInfo(displayName || email);
+                const { uid, email, displayName } = user;
+                dispatch(addUser({ uid: uid, email: email, displayName: displayName }));
+                setUserInfo(displayName || email);
             } else {
-              // User is signed out
-              dispatch(removeUser());
-              navigate("/login");
-              setUserInfo("");
+                dispatch(removeUser());
+                setUserInfo("");
             }
-          });
-          fetchData();
+        });
+        
+        return () => unsubscribe();
+    }, []);
 
-          //cleanup function
-          return () => unsubscribe();
-
-    }, [dispatch, navigate, setUserInfo]);
-
-    const fetchData = async () =>{
-        //We get fetch from Browser
-        const url = "https://swiggy.adiagr.in/dapi/restaurants/list/v5?lat=12.9650186&lng=77.7595472&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING"
-         const data = await fetch(url);
-
-            const json = await data.json();
-            const arrayOfCards = json?.data?.cards;
-            const restaurantListing = "restaurant_grid_listing"; 
-            console.log("here"+json?.data?.cards[2]?.card?.card?.gridElements?.infoWithStyle?.restaurants); 
-             console.log(arrayOfCards); 
-
-            //Optional chaining
-           
-            for (const cardObj of arrayOfCards) {
-                if (cardObj?.card?.card && cardObj?.card?.card?.id === restaurantListing) {
-                  const resData =
-                  cardObj.card?.card?.gridElements?.infoWithStyle?.restaurants;
-                  setListOfRestaurant(resData);
-                  setFilteredRestaurants(resData);
-                }
-              }
-
-    }
+    const fetchData = async () => {
+        setIsLoading(true);
+        try {
+            // We get fetch from Browser
+            const url = "https://swiggy.adiagr.in/dapi/restaurants/list/v5?lat=12.9650186&lng=77.7595472&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING";
+            const response = await fetch(url);
+            
+            // Check if response is successful
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            
+            const json = await response.json();
+            
+            // Add logging to see what data is coming back
+            console.log("API Response:", json);
+            
+            // Check if the expected data structure exists
+            if (json?.data?.cards && Array.isArray(json.data.cards)) {
+                // Update the component state with the fetched data
+                const restaurants = json.data.cards.find(card => 
+                    card?.card?.card?.gridElements?.infoWithStyle?.restaurants
+                )?.card?.card?.gridElements?.infoWithStyle?.restaurants || [];
+                
+                setListOfRestaurant(restaurants);
+                setFilteredRestaurants(restaurants);
+            } else {
+                console.error("Expected data structure not found in API response:", json);
+            }
+        } catch (error) {
+            console.error("Error fetching restaurant data:", error);
+            // Set some default data or show error state
+            setListOfRestaurant([]);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const offlineStatus = useOfflinePage();
 
@@ -107,88 +119,187 @@ const Body = () =>{
     //whenever state variable updates, react triggers a reconciliation cycle(re-renders the component )
     
     //Using ternary operation
-    return (listOfRestaurants === null ? <Shimmer/> :(
-        <div className="body">
-            <div>
-                <div className="filter flex">
-                    <div className="search m-4 p-4">
-                        <input className="border border-solid border-black"
-                        //Binding to a local state variable searchText, but that forever remains empty string as initialised  
-                        //Local state variable changes everytime we are typing anything
-                        //And everytime the local state variable changes the component is re-rendered
-                        value={searchText} 
-                        size="50" type="text" 
-                        data-testid = "searchInput"
-                        //As soon as my input changes I want to update it with the updated value
-                        onChange={(e)=>{setSearchText(e.target.value)}}/>
-                        <button 
-                        className="px-4 m-2 py-2 bg-orange-300 shadow-xl rounded-lg"
-                        onClick={()=>{
-                            //Filter the restaurant cards and update the UI
-                            // const filteredSearchText = searchText.fetch 
-                            //setSearchText(value); 
-                            const searchFilterList = filteredRestaurants.filter(
-                                (res) => res.info.name.toLowerCase().includes(searchText.toLowerCase())
-                            ); 
-                            setListOfRestaurant(searchFilterList);
-                            console.log(searchText);
-                        }}>Search</button>
-                    </div>
-                <div className="search m-4 px-4 py-4">
-                <button 
-                    className=" bg-orange-300 shadow-xl m-2 px-4 py-2 rounded-lg" 
-                    onClick={
-                        ()=>{
-                            console.log("button clicked")
-                            //filter logic
-                            const filteredList = filteredRestaurants.filter(
-                                (res) => res.info.avgRating>4
-                             );
-                             setListOfRestaurant(filteredList); 
-                             //console.log(listOfRestaurants);
-                            }
-                        }>
-                        Top Rated Restaurants
-                 </button>
-                </div>
-                <div className="search m-4 px-4 py-4">
-                    <label>User Name:</label>
-                    <input className="border border-black p-2" value={loggedInUser}onChange={(e)=>setUserInfo(e.target.value )}/> 
-                </div>
+    return (
+        <PageTransition>
+            <div className="min-h-screen bg-gray-50">
+                {isLoading ? (
+                    <Shimmer />
+                ) : (
+                    <>
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-8">
+                            <HeroSection />
+                        </div>
+                        
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+                            <div className="bg-white p-6 rounded-lg shadow-md">
+                                <div className="flex flex-col md:flex-row gap-4">
+                                    <div className="flex-grow">
+                                        <input
+                                            type="text"
+                                            className="w-full px-4 py-3 rounded-lg border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-amber-300"
+                                            placeholder="Search for restaurants or cuisines..."
+                                            value={searchText}
+                                            onChange={(e) => setSearchText(e.target.value)}
+                                        />
+                                        {searchError && (
+                                            <p className="mt-2 text-red-500">{searchError}</p>
+                                        )}
+                                    </div>
+                                    <button
+                                        className="px-6 py-3 bg-amber-500 text-white font-medium rounded-lg hover:bg-amber-600 transition-colors"
+                                        onClick={handleSearch}
+                                    >
+                                        Search
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+                            <div className="flex flex-wrap gap-3">
+                                <button
+                                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors 
+                                    ${activeFilter === "rating" 
+                                        ? "bg-amber-500 text-white" 
+                                        : "bg-white text-gray-700 hover:bg-gray-100"}`}
+                                    onClick={() => applyFilter("rating")}
+                                >
+                                    Top Rated
+                                </button>
+                                <button
+                                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors 
+                                    ${activeFilter === "fast-delivery" 
+                                        ? "bg-amber-500 text-white" 
+                                        : "bg-white text-gray-700 hover:bg-gray-100"}`}
+                                    onClick={() => applyFilter("fast-delivery")}
+                                >
+                                    Fast Delivery
+                                </button>
+                                <button
+                                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors 
+                                    ${activeFilter === "offers" 
+                                        ? "bg-amber-500 text-white" 
+                                        : "bg-white text-gray-700 hover:bg-gray-100"}`}
+                                    onClick={() => applyFilter("offers")}
+                                >
+                                    Offers
+                                </button>
+                            </div>
+                        </div>
 
-                </div>
-            </div>
-            <div>
-                <WhatsOnMyMind/>
-            </div>
-            <div className="flex flex-wrap justify-center">
-                {/* restaurantCards */} 
-                {
-                    // Whenever we are looping, we need to have a key property that is unique to each
-                    //Here the key is the ID which is unique for each restaurant
-                    //Or we can use an index as the key but index as key is not recommended 
-                    listOfRestaurants.map((restaurant) =>
-                        (
-                        <Link className="restaurant-link" key = {restaurant?.info.id} to={"/restaurants/" + restaurant?.info.id}> 
-                        {/* if the restaurant has the aggregatedDiscountInfoV3 add a label to it */}
-                            {restaurant.info.aggregatedDiscountInfoV3 ? 
-                            (<RestaurantWithOffer resData= {restaurant?.info }/>)
-                             : (<RestaurantCard resData = {restaurant?.info }/>
-                             )}
-                        </Link>
-                         ))
-                } 
-            </div>
-            <div>
-                <Footer/>
-            </div>
+                        {/* WhatsOnMyMind Section */}
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+                            <WhatsOnMyMind />
+                        </div>
 
-        </div>
-    ))
+                        {/* Restaurant List */}
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+                            <h2 className="text-2xl font-bold text-gray-800 mb-6">
+                                {activeFilter ? 
+                                    `${activeFilter === "rating" ? "Top Rated" : 
+                                       activeFilter === "fast-delivery" ? "Fast Delivery" : 
+                                       "Special Offers"} Restaurants` : 
+                                    "All Restaurants"}
+                            </h2>
+                            
+                            {listOfRestaurants.length === 0 ? (
+                                <div className="text-center py-12 bg-white rounded-lg shadow">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <h3 className="text-lg font-medium text-gray-900 mb-2">No restaurants found</h3>
+                                    <p className="text-gray-500">
+                                        Try changing your filters or search criteria
+                                    </p>
+                                    <button 
+                                        onClick={() => {
+                                            setListOfRestaurant(filteredRestaurants);
+                                            setSearchText("");
+                                            setActiveFilter("");
+                                            setSearchError("");
+                                        }}
+                                        className="mt-4 px-4 py-2 bg-amber-500 text-white font-medium rounded-md hover:bg-amber-600 transition-colors"
+                                    >
+                                        Reset Filters
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                                    {listOfRestaurants.map(restaurant => (
+                                        <Link 
+                                            className="h-full" 
+                                            key={restaurant?.info.id} 
+                                            to={"/restaurants/" + restaurant?.info.id}
+                                        > 
+                                            {restaurant.info.aggregatedDiscountInfoV3 ? 
+                                                <RestaurantWithOffer resData={restaurant?.info} /> : 
+                                                <RestaurantCard resData={restaurant?.info} />
+                                            }
+                                        </Link>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </>
+                )}
+                
+                <Footer />
+            </div>
+        </PageTransition>
+    )
 }
 
+const handleSearch = () => {
+    if (!searchText.trim()) {
+        setListOfRestaurant(filteredRestaurants);
+        setSearchError("");
+        return;
+    }
+    
+    const searchResults = filteredRestaurants.filter(
+        restaurant => 
+            restaurant.info.name.toLowerCase().includes(searchText.toLowerCase()) ||
+            restaurant.info.cuisines.some(cuisine => 
+                cuisine.toLowerCase().includes(searchText.toLowerCase())
+            )
+    );
+    
+    if (searchResults.length === 0) {
+        setSearchError(`No restaurants found matching "${searchText}"`);
+    } else {
+        setSearchError("");
+    }
+    
+    setListOfRestaurant(searchResults);
+};
 
-
+const applyFilter = (filterType) => {
+    let filtered = [...filteredRestaurants];
+    
+    if (activeFilter === filterType) {
+        setActiveFilter("");
+        setListOfRestaurant(filteredRestaurants);
+        return;
+    }
+    
+    setActiveFilter(filterType);
+    
+    switch (filterType) {
+        case "rating":
+            filtered = filteredRestaurants.filter(res => res.info.avgRating > 4.0);
+            break;
+        case "fast-delivery":
+            filtered = filteredRestaurants.filter(res => res.info.sla?.deliveryTime < 30);
+            break;
+        case "offers":
+            filtered = filteredRestaurants.filter(res => res.info.aggregatedDiscountInfoV3);
+            break;
+        default:
+            break;
+    }
+    
+    setListOfRestaurant(filtered);
+};
 
 //Exporting the body
 export default Body;
