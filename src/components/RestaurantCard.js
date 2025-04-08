@@ -7,7 +7,7 @@ const RestaurantCard = (props) => {
     const restaurantInfo = props.resData?.info || props.resData;
     
     const {cloudinaryImageId, name, locality, cuisines, avgRating, id, sla } = restaurantInfo;
-    //console.log({resData});
+    console.log(restaurantInfo.cloudinaryImageId);
     //console.log(resData);
     return (
         <div className="group w-full sm:w-64 m-3 bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-1">

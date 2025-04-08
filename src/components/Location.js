@@ -28,9 +28,10 @@ const Location = () => {
   const getAddress = async (lat, lng) => {
     try {
       console.log(`Fetching address for coordinates: ${lat}, ${lng}`);  
-      console.log('Using API Key:', GOOGLE_MAPS_KEY);
+      const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+      console.log("Using API Key:", apiKey);
 
-      const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${GOOGLE_MAPS_KEY}`);
+      const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`);
       const data = await response.json();
       
       console.log('API Response:', data);

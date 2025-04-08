@@ -67,7 +67,7 @@ const Contact = () => {
                 <div className="bg-white rounded-lg shadow-xl overflow-hidden">
                     <div className="grid grid-cols-1 lg:grid-cols-2">
                         {/* Contact Information */}
-                        <div className="bg-gradient-to-r from-amber-50 to-orange-50 p-8 lg:p-12">
+                        <div className="bg-gradient-to-r from-gray-100 to-gray-200 p-8 lg:p-12">
                             <div className="h-full flex flex-col justify-between">
                                 <div>
                                     <h2 className="text-2xl font-bold text-gray-800 mb-6">Contact Information</h2>

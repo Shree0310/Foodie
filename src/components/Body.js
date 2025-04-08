@@ -31,6 +31,7 @@ const Body = () => {
     const [activeFilter, setActiveFilter] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(8);
+    const [dishes, setDishes] = useState([]);
 
     const RestaurantWithOffer = withOfferLabel(RestaurantCard);
     const {setUserInfo, loggedInUser} = useContext(userContext);
@@ -138,6 +139,24 @@ const Body = () => {
             const json = await response.json();
             
             console.log("API Response:", json);
+
+            if(json?.data?.cards && Array.isArray(json.data.cards)) {
+                const dishesData = json.data.cards[0]?.card.card?.gridElements?.infoWithStyle?.info || [];
+                const formattedDishes = dishesData.map(dish => ({
+                    id: dish.id || `dish-${Math.random().toString(36).substr(2, 9)}`,
+                    name: dish.title || 'Food Item',
+                    description: dish.description || '',
+                    imageId: dish.imageId,
+                    imageUrl: dish.imageId,
+                    action: dish.action || {},
+                    category: dish.category || 'Food'
+                }));
+
+                console.log("Formatted dishes:", formattedDishes);
+                setDishes(formattedDishes);
+            } else {
+                console.error("Expected data structure not found in API response:", json);
+            }
             
             if (json?.data?.cards && Array.isArray(json.data.cards)) {
                 const restaurants = json.data.cards.find(card => 
@@ -256,7 +275,9 @@ const Body = () => {
 
                         {/* What's on my mind section */}
                         <div id="whats-on-my-mind" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-                            <WhatsOnMyMind />
+                           {dishes.length > 0 && (
+                                <WhatsOnMyMind dishes={dishes}/>
+                            )}
                         </div>
 
                         {/* Restaurant List */}
