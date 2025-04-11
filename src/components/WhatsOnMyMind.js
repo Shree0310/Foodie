@@ -1,5 +1,6 @@
 import React from 'react';
 import { CDN_URL } from '../utils/constants';
+import { Link } from 'react-router-dom';
 
 const WhatsOnMyMind = ({ dishes }) => {
 
@@ -14,19 +15,20 @@ const WhatsOnMyMind = ({ dishes }) => {
                 {dishes.map((dish) => (
                     <div className='flex-shrink-0 snap-center transform transition-transform duration-300 hover:scale-105 overflow-hidden space-x-4' key={dish.id}>
                         <div className='rounded-lg overflow-hidden w-36 h-36'>
-                            <img
-                                className='w-full h-full object-cover cursor-pointer'
-                                src={CDN_URL + dish.imageUrl}
-                                alt={dish.name}
-                                loading='lazy' />
+                            <Link
+                                key={dish.id}
+                                to={"/collections/" + dish.id}>
+                                <img
+                                    className='w-full h-full object-cover cursor-pointer'
+                                    src={CDN_URL + dish.imageUrl}
+                                    alt={dish.name}
+                                    loading='lazy' />
+                            </Link>
                         </div>
-
                     </div>
                 ))}
             </div>
         </div>
-
-
     )
 }
 

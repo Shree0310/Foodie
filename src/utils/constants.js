@@ -9,7 +9,7 @@ export const MENU_API = "https://www.swiggy.com/dapi/menu/pl?page-type=REGULAR_M
 export const CART_URL = "https://www.freeiconspng.com/uploads/basket-cart-icon-27.png";
 
 export const GOOGLE_MAPS_API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
-console.log('API Key from env changed:', process.env.REACT_APP_GOOGLE_MAPS_API_KEY);
+//console.log('API Key from env changed:', process.env.REACT_APP_GOOGLE_MAPS_API_KEY);
 
 export const FIREBASE_API_KEY = process.env.REACT_APP_FIREBASE_API_KEY;
 

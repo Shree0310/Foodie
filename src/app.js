@@ -17,6 +17,7 @@ import Login from "./components/Login";
 import SignUp from "./components/SignUp";
 //import Grocery from "./components/Grocery";
 import DemoModeIndicator from "./components/DemoModeIndicator";
+import DishCollections from "./components/DishCollections";
 
 //All the files should have only 100 lines of code not more than that
 const styleCard = {
@@ -110,6 +111,10 @@ const appRouter = createBrowserRouter([
         //":" signifies that the resId will be dynamic i.e different for different restaurants 
         path:"/restaurants/:resId",
         element: <RestaurantMenu/>
+      },
+      {
+        path:"/collections/:dishId",
+        element: <DishCollections/>
       }
     ],
     errorElement: <Error/>
